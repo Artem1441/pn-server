@@ -10,7 +10,6 @@ node_modules/
 .pnpm/
 .vscode/
 .idea/
-dist/
 build/
 
 .env
