@@ -1,34 +1,60 @@
+import RoleType from "./RoleType.type";
+
 interface IUser {
-    // id SERIAL PRIMARY KEY,
-    // role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'specialist', 'accountant')) DEFAULT 'specialist',
-    // login VARCHAR(100) UNIQUE,
-    // password TEXT,
-    // name VARCHAR(63) NOT NULL,
-    // surname VARCHAR(63) NOT NULL,
-    // patronymic VARCHAR(63),
-    // phone VARCHAR(15) UNIQUE NOT NULL, 
-    // is_confirmed_phone BOOLEAN DEFAULT false,
-    // email VARCHAR(100) UNIQUE NOT NULL,
-    // is_confirmed_email BOOLEAN DEFAULT false,
-    // inn VARCHAR(12) UNIQUE NOT NULL,
-    // is_banned BOOLEAN DEFAULT false,
-    // time_zone VARCHAR(6) NOT NULL CHECK (time_zone IN (
-    //     'UTC+2', 'UTC+3', 'UTC+4', 'UTC+5', 'UTC+6', 
-    //     'UTC+7', 'UTC+8', 'UTC+9', 'UTC+10', 'UTC+11', 'UTC+12'
-    // )) DEFAULT 'UTC+3',
-    // locale VARCHAR(2) NOT NULL CHECK (locale IN ('ru', 'en')) DEFAULT 'ru',
-    // bank_bik VARCHAR(9),
-    // bank_acc VARCHAR(25),
-    // birthdate DATE CHECK (birthdate < CURRENT_DATE),
-    // address_reg TEXT,
-    // passport JSONB,
-    // equipments JSONB,
-    // ycl_staff_id INTEGER,
-    // agent_percent NUMERIC(15,2) CHECK (agent_percent >= 0 AND agent_percent <= 100),
-    // speciality_id INTEGER,
-    // studio_id INTEGER,
-    // created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    // updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+  id: number;
+  role: RoleType;
+  login: string;
+  password: string;
+  name: string;
+  surname: string;
+  patronymic?: string;
+  phone: string;
+  is_confirmed_phone: boolean;
+  email: string;
+  is_confirmed_email: boolean;
+  inn: string;
+  is_banned: boolean;
+  time_zone:
+    | "UTC+2"
+    | "UTC+3"
+    | "UTC+4"
+    | "UTC+5"
+    | "UTC+6"
+    | "UTC+7"
+    | "UTC+8"
+    | "UTC+9"
+    | "UTC+10"
+    | "UTC+11"
+    | "UTC+12";
+  locale: "ru" | "en";
+  bank_bik?: string;
+  bank_acc?: string;
+  birthdate?: Date;
+  address_reg?: string;
+  passport?: {
+    passport_series: string;
+    passport_number: string;
+    issue_date: string;
+    issued_by: string;
+    nationality: string;
+    registration_address: string;
+    residential_address: string;
+    birthdate: string;
+  };
+  equipments?: any; // JSONB, can be typed more strictly if structure is known
+  ycl_staff_id?: number;
+  agent_percent?: number;
+  speciality_id?: number;
+  studio_id?: number;
+  passport_main?: string;
+  passport_registration?: string;
+  photo_front?: string;
+  registration_status:
+    | "in the process of filling"
+    | "under review"
+    | "confirmed";
+  created_at: Date;
+  updated_at: Date;
 }
 
-export default IUser
+export default IUser;

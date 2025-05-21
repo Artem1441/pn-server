@@ -1,3 +1,5 @@
+CREATE DATABASE nails;
+
 -- users
 CREATE TABLE public.users (
     id SERIAL PRIMARY KEY,
@@ -28,6 +30,10 @@ CREATE TABLE public.users (
     agent_percent NUMERIC(15,2) CHECK (agent_percent >= 0 AND agent_percent <= 100),
     speciality_id INTEGER,
     studio_id INTEGER,
+    passport_main VARCHAR(255),
+    passport_registration VARCHAR(255),
+    photo_front VARCHAR(255),
+    registration_status VARCHAR(63) NOT NULL CHECK (registration_status IN ('in the process of filling', 'under review', 'confirmed')) DEFAULT 'in the process of filling',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

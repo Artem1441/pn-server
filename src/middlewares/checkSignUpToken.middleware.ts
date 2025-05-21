@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import errors from "../constants/errors";
 import { jwtVerify } from "../helpers/jwt.helper";
 import IResp from "../types/IResp.interface";
 
@@ -10,7 +11,7 @@ const checkSignUpTokenMiddleware = async (
   try {
     const token = req.cookies.signUpToken;
     if (!token) {
-      res.status(401).json({ status: false, error: "Что-то пошло не так 3" });
+      res.status(401).json({ status: false, error: errors.missingToken });
       return;
     }
 
@@ -19,7 +20,7 @@ const checkSignUpTokenMiddleware = async (
 
     next();
   } catch (error) {
-    res.status(401).json({ status: false, error: "Что-то пошло не так 3" });
+    res.status(401).json({ status: false, error: errors.serverError });
     return;
   }
 };

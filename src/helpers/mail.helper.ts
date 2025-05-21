@@ -5,13 +5,16 @@ dotenv.config();
 export const sendEmail = async (
   email: string,
   topic: string,
-  message: string
+  message: string,
+  html?: string
 ) => {
   const transporter = nodemailer.createTransport({
-    service: "gmail", // or other services like 'yahoo', 'outlook'
+    host: "smtp.yandex.ru",
+    port: 465,
+    secure: true,
     auth: {
       user: String(process.env.MAIL_USER),
-      pass: String(process.env.MAIL_PASSWORD), // https://myaccount.google.com/apppasswords?pli=1&rapt=AEjHL4PpOEhFWSLQSBlGFN2GGdelEusmBXNcKRAUlNbqOKjxNkbm5tblyXeehDi_boDUCGm4jhoQ1MKuqnUb2gykr7hJu2fCKsxR1ULDrmJB0bCF79NkgbE (if 2-step autentification is on)
+      pass: String(process.env.MAIL_PASSWORD),
     },
   });
 
@@ -20,6 +23,7 @@ export const sendEmail = async (
     to: email,
     subject: topic,
     text: message,
+    html: html,
   };
 
   try {

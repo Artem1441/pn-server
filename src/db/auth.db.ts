@@ -1,44 +1,102 @@
-import queryDB from ".";
+import { Op, ValidationError } from "sequelize";
+import errors from "../constants/errors.js";
+import { hashPassword } from "../helpers/bcrypt.helper.js";
+import { generateLogin } from "../helpers/generate.helper.js";
+import { User } from "../models/User.model.js";
+import { VerificationCode } from "../models/VerificationCode.model.js";
+import IUser from "../types/IUser.interface.js";
+import IVerificationCode from "../types/IVerificationCode.interface.js";
 
-export const createVerificatioCodeQuery = async ({
+export const getActiveVerificationCode = async (
+  userId: number,
+  type: "phone" | "email",
+  value: string,
+  code: string
+) => {
+  const verificationCode = await VerificationCode.findOne({
+    where: {
+      user_id: userId,
+      type,
+      value,
+      code,
+      expires_at: { [Op.gt]: new Date() },
+      is_used: false,
+    },
+  });
+
+  if (!verificationCode) throw new Error(errors.invalidOrExpiredCode);
+
+  return verificationCode;
+};
+
+export const confirmUserPhone = async (userId: number): Promise<void> => {
+  const user = await User.findByPk(userId);
+  if (!user) throw new Error(errors.userNotFound);
+
+  user.is_confirmed_phone = true;
+  await user.save();
+};
+
+export const confirmUserEmail = async (userId: number): Promise<void> => {
+  const user = await User.findByPk(userId);
+  if (!user) throw new Error(errors.userNotFound);
+
+  user.is_confirmed_email = true;
+  await user.save();
+};
+
+export const markVerificationCodeAsUsed = async (id: number): Promise<void> => {
+  const verificationCode = await VerificationCode.findByPk(id);
+  if (!verificationCode) {
+    throw new Error("Verification code not found");
+  }
+
+  verificationCode.is_used = true;
+  await verificationCode.save();
+};
+
+export const getUserById = async (id: number): Promise<IUser> => {
+  const user = await User.findByPk(id);
+  if (!user) throw new Error(errors.userNotFound);
+  return user.toJSON();
+};
+
+export const createVerificationCode = async ({
   userId,
   type,
   value,
   code,
   expiresAt,
 }: {
-  userId: any;
-  type: any;
-  value: any;
-  code: any;
-  expiresAt: any;
-}) => {
-  await queryDB(
-    `INSERT INTO public.verification_codes (user_id, type, value, code, expires_at)
-     VALUES ($1, $2, $3, $4, $5)`,
-    [userId, type, value, code, expiresAt]
-  );
+  userId: number;
+  type: "phone" | "email";
+  value: string;
+  code: string;
+  expiresAt: Date;
+}): Promise<IVerificationCode> => {
+  const verificationCode = await VerificationCode.create({
+    user_id: userId,
+    type,
+    value,
+    code,
+    expires_at: expiresAt,
+  });
+
+  return verificationCode.toJSON();
 };
 
-export const getUserQuery = async (id: any) => {
-  const query = `SELECT * FROM public.users WHERE id = $1`;
-  const result = await queryDB(query, [id]);
-  return result.rows[0];
+export const getUserByField = async (
+  field: string,
+  value: string
+): Promise<IUser | null> => {
+  const user = await User.findOne({
+    where: { [field]: value },
+  });
+  if (!user) return null
+  return user.toJSON();
 };
 
-export const getUserByQuery = async (key: string, value: string) => {
-  const query = `SELECT * FROM public.users WHERE ${key} = $1`;
-  const result = await queryDB(query, [value]);
-  return result.rows[0];
-};
-
-// export const createUserQuery = async ({phone}) => {
-//   const query = `INSERT INTO public.users DEFAULT VALUES RETURNING id;`;
-//   const result = await queryDB(query, []);
-//   return result.rows[0].id;
-// };
-
-export const createUserQuery = async ({
+export const createUser = async ({
   name,
   surname,
   patronymic,
@@ -46,62 +104,94 @@ export const createUserQuery = async ({
   email,
   inn,
 }: {
-  name: string;
-  surname: string;
-  patronymic: string;
-  phone: any;
-  email: string;
-  inn: any;
-}) => {
-  const query = `INSERT INTO public.users (name, surname, patronymic, phone, email, inn) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`;
-  const result = await queryDB(query, [
-    name,
-    surname,
-    patronymic,
-    phone,
-    email,
-    inn,
-  ]);
+  name: IUser["name"];
+  surname: IUser["surname"];
+  patronymic?: IUser["patronymic"];
+  phone: IUser["phone"];
+  email: IUser["email"];
+  inn: IUser["inn"];
+}): Promise<number> => {
+  try {
+    const login = generateLogin(name, surname);
+    const temporaryPassword = "";
+    const hashedPassword = await hashPassword(temporaryPassword);
 
-  return result.rows[0].id;
+    const user = await User.create({
+      name,
+      surname,
+      patronymic,
+      phone,
+      email,
+      inn,
+      login,
+      password: hashedPassword,
+    });
+
+    return user.id;
+  } catch (err) {
+    console.log(err);
+    return -1;
+  }
 };
 
-// export const updateUserFullnameByIdQuery = async ({
-//   name,
-//   surname,
-//   patronymic,
-//   id,
-// }: {
-//   name: string;
-//   surname: string;
-//   patronymic: string;
-//   id: any;
-// }) => {
-//   const query = `UPDATE public.users
-//   SET name = $1, surname = $2, patronymic = $3 WHERE id = $4;`;
-//   await queryDB(query, [name, surname, patronymic, id]);
-// };
-
-export const updateUserPhoneByIdQuery = async ({
-  phone,
+export const updatePersonalDataToUser = async ({
   id,
+  passport,
+  bank_bik,
+  bank_acc,
+  passport_main,
+  passport_registration,
+  photo_front,
 }: {
-  phone: string;
-  id: any;
-}) => {
-  const query = `UPDATE public.users
-  SET phone = $1 WHERE id = $2;`;
-  await queryDB(query, [phone, id]);
+  id: number;
+  passport: IUser["passport"];
+  bank_bik: IUser["bank_bik"];
+  bank_acc: IUser["bank_acc"];
+  passport_main: IUser["passport_main"];
+  passport_registration: IUser["passport_registration"];
+  photo_front: IUser["photo_front"];
+}): Promise<void> => {
+  const user = await User.findByPk(id);
+  if (!user) throw new Error(errors.userNotFound);
+
+  user.passport = passport;
+  user.bank_bik = bank_bik;
+  user.bank_acc = bank_acc;
+  user.passport_main = passport_main;
+  user.passport_registration = passport_registration;
+  user.photo_front = photo_front;
+  user.registration_status = "under review"
+  await user.save();
 };
 
-export const updateUserEmailByIdQuery = async ({
-  email,
+export const updateUserFieldById = async ({
   id,
+  field,
+  value,
 }: {
-  email: string;
-  id: any;
+  id: number;
+  field: string;
+  value: any;
 }) => {
-  const query = `UPDATE public.users
-  SET email = $1 WHERE id = $2;`;
-  await queryDB(query, [email, id]);
+  const user = await User.findByPk(id);
+
+  if (!user) throw new Error(errors.userNotFound);
+
+  if (!(field in user)) {
+    throw new Error(`Field "${field}" does not exist in User model`);
+  }
+
+  (user as any)[field] = value;
+
+  try {
+    await user.save();
+    return user;
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      throw new Error(
+        `Validation error while updating field "${field}": ${error.message}`
+      );
+    }
+    throw error;
+  }
 };

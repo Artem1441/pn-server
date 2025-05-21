@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { getUserQuery } from "../db/auth.db";
+import errors from "../constants/errors";
+import registrationStages from "../constants/registrationStages";
+import { getUserById } from "../db/auth.db";
 import { jwtVerify } from "../helpers/jwt.helper";
 import IResp from "../types/IResp.interface";
 import StageType from "../types/StageType.type";
@@ -14,7 +16,7 @@ const signUpStageMiddleware = async (
     if (!token) {
       res.status(200).json({
         status: true,
-        data: "accession agreement",
+        data: registrationStages.accessionAgreement,
       });
       return;
     }
@@ -22,20 +24,31 @@ const signUpStageMiddleware = async (
     const decoded = jwtVerify(token);
     const userId = decoded.id;
 
-    const user = await getUserQuery(userId);
+    const user = await getUserById(userId);
+
+    const {registration_status} = user
+
+    if (registration_status === "under review") {
+      res.status(200).json({
+        status: true,
+        data:registrationStages.waitingRoom,
+      });
+      return;
+    }
+
     const { is_confirmed_phone, is_confirmed_email } = user;
 
     if (!is_confirmed_phone || !is_confirmed_email) {
       res.status(200).json({
         status: true,
-        data: "identification data",
+        data:registrationStages.identificationData,
       });
       return;
     }
 
     res.status(200).json({
       status: true,
-      data: "personal data",
+      data: registrationStages.personalData,
     });
     next();
     return;
@@ -43,7 +56,7 @@ const signUpStageMiddleware = async (
     console.log(error);
     res.status(401).json({
       status: false,
-      error: "Что-то пошло не так 453",
+      error: errors.serverError,
     });
     return;
   }
