@@ -1,16 +1,21 @@
 import { Request, Response } from "express";
-import { jwtSign, jwtVerify } from "../helpers/jwt.helper.js";
+import { jwtSign } from "../helpers/jwt.helper.js";
 import dotenv from "dotenv";
 import {
   createUser,
+  deleteUserById,
   getUserByField,
+  getUserById,
   updatePersonalDataToUser,
   updateUserFieldById,
 } from "../db/auth.db.js";
 import { verifyCode } from "../helpers/verification.helper.js";
 import IResp from "../types/IResp.interface.js";
 import errors from "../constants/errors.js";
-import { generateVerificationCode } from "../helpers/generate.helper.js";
+import {
+  generatePassword,
+  generateVerificationCode,
+} from "../helpers/generate.helper.js";
 import IUser from "../types/IUser.interface.js";
 import tokens from "../constants/tokens.js";
 import RoleType from "../types/RoleType.type.js";
@@ -19,6 +24,8 @@ import taxpayerStatusApi from "../api/taxpayerStatus.api.js";
 import getBankByBikApi from "../api/getBankByBik.api.js";
 import { sendEmail } from "../helpers/mail.helper.js";
 import { bcryptCompare, hashPassword } from "../helpers/bcrypt.helper.js";
+import { sendSms } from "../helpers/sms.helper.js";
+import messages from "../constants/messages.js";
 dotenv.config();
 
 class AuthController {
@@ -93,6 +100,7 @@ class AuthController {
     try {
       res
         .cookie("token", jwtSign({ id }, "7d"), tokens.token)
+        .clearCookie("signUpToken", tokens.clearToken)
         .status(200)
         .json({ status: true, data: { role } });
       return;
@@ -107,7 +115,6 @@ class AuthController {
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
-    console.log("test");
     const { name, surname, patronymic, phone, email, inn } = req.body;
     let id;
     try {
@@ -314,6 +321,7 @@ class AuthController {
 
       res
         .cookie("token", jwtSign({ id: user.id }, "7d"), tokens.token)
+        .clearCookie("signUpToken", tokens.clearToken)
         .status(200)
         .json({ status: true });
       return;
@@ -351,7 +359,7 @@ class AuthController {
     const token = jwtSign({ id: user.id, email: user.email }, "1h");
     const resetLink = `${process.env.CORS_URL}/auth/reset-password?token=${token}`;
 
-    sendEmail(user.email, "Восстановление пароля", resetLink);
+    await sendEmail(user.email, "Восстановление пароля", resetLink);
 
     res.status(200).json({ status: true });
     return;
@@ -370,6 +378,60 @@ class AuthController {
         field: "password",
         value: hashedPassword,
       });
+
+      res.status(200).json({ status: true });
+      return;
+    } catch (err) {
+      res.status(500).json({ status: false, error: errors.serverError });
+      return;
+    }
+  };
+
+  public confirmEmployeeForm = async (
+    req: Request,
+    res: Response<IResp<null>>
+  ) => {
+    const { id } = req.body;
+    try {
+      const user = await getUserById(id);
+      await updateUserFieldById({
+        id,
+        field: "registration_status",
+        value: "confirmed",
+      });
+
+      const password = generatePassword();
+      const hashedPassword = await hashPassword(password);
+
+      await updateUserFieldById({
+        id,
+        field: "password",
+        value: hashedPassword,
+      });
+      const login = user.login;
+
+      await sendEmail(user.email, messages.emailRequestProcessedSent, messages.emailAcceptRequestProcessedSent(login, password));
+      await sendSms(user.phone, messages.smsRequestProcessedSent);
+
+      res.status(200).json({ status: true });
+      return;
+    } catch (err) {
+      res.status(500).json({ status: false, error: errors.serverError });
+      return;
+    }
+  };
+
+  public refuseEmployeeForm = async (
+    req: Request,
+    res: Response<IResp<null>>
+  ) => {
+    const { id, rejectionReason } = req.body;
+    try {
+      const user = await getUserById(id);
+
+      await deleteUserById(id);
+      await sendEmail(user.email, messages.emailRequestProcessedSent, messages.emailRejectRequestProcessedSent(rejectionReason));
+      await sendSms(user.phone, messages.smsRequestProcessedSent);
 
       res.status(200).json({ status: true });
       return;

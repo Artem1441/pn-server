@@ -7,6 +7,8 @@ const errors = {
 
   unexpectedError: "Неожиданная ошибка",
 
+  allFieldsRequired: "Все поля обязательны к заполнению",
+
   nameAndSurnameInvalid: "Введите имя и фамилию",
   phoneInvalid: "Введите корректный формат телефона",
   emailInvalid: "Введите корректный формат email",
@@ -18,6 +20,9 @@ const errors = {
   userWithInnAlreadyExists: "Пользователь с таким ИНН уже есть в системе",
 
   userNotFound: "Пользователь не найден",
+  studioNotFound: "Студия не найдена",
+
+  userNotAdmin: "Пользователь не админ",
 
   serverError: "Ошибка сервера",
 
@@ -57,6 +62,10 @@ const errors = {
   tokenExpired: "Токен просрочен",
 
   passwordTooShort: "Пароль должен содержать минимум 8 символов",
+
+  smsSendError: "Ошибка при отправке sms",
+
+  studioShortNameRequired: "Краткое название студии не должно быть пустым"
 
 };
 

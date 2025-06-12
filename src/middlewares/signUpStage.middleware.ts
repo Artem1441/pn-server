@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import errors from "../constants/errors";
 import registrationStages from "../constants/registrationStages";
+import tokens from "../constants/tokens";
 import { getUserById } from "../db/auth.db";
-import { jwtVerify } from "../helpers/jwt.helper";
+import { jwtSign, jwtVerify } from "../helpers/jwt.helper";
 import IResp from "../types/IResp.interface";
 import StageType from "../types/StageType.type";
 
@@ -28,10 +29,22 @@ const signUpStageMiddleware = async (
 
     const {registration_status} = user
 
+
     if (registration_status === "under review") {
       res.status(200).json({
         status: true,
         data:registrationStages.waitingRoom,
+      });
+      return;
+    }
+
+    if (registration_status === "confirmed") {
+      res
+      .cookie("token", jwtSign({ id: userId }, "7d"), tokens.token)
+      .clearCookie("signUpToken", tokens.clearToken)
+      .status(200).json({
+        status: true,
+        data:registrationStages.homePage,
       });
       return;
     }

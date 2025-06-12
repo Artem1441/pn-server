@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import errors from "../constants/errors";
 import { getUserById } from "../db/auth.db";
-// import { getUserQuery } from "../db/auth.db";
 
 const validateUserExistsMiddleware = async (
   req: Request,
@@ -10,7 +10,7 @@ const validateUserExistsMiddleware = async (
   const userId = req.body.user?.id;
 
   if (!userId) {
-    res.status(401).json({ error: "Отсутствует идентификатор пользователя" });
+    res.status(401).json({ error: errors.userNotFound });
     return;
   }
 
@@ -18,19 +18,14 @@ const validateUserExistsMiddleware = async (
     const user = await getUserById(userId);
 
     if (!user) {
-      res
-        .status(401)
-        .json({ error: "Пользователь не найден или деактивирован" });
+      res.status(401).json({ error: errors.userNotFound });
       return;
     }
 
     req.body.user = user;
     next();
   } catch (error) {
-    console.error("Ошибка при проверке пользователя:", error);
-    res
-      .status(500)
-      .json({ error: "Серверная ошибка при проверке пользователя" });
+    res.status(500).json({ error: errors.serverError });
     return;
   }
 };

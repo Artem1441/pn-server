@@ -3,6 +3,7 @@ type StageType =
   | "acquaintance"
   | "identification data"
   | "personal data"
-  | "waiting room";
+  | "waiting room"
+  | "home page";
 
 export default StageType;

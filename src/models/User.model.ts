@@ -239,9 +239,9 @@ export const initUserModel = (sequelize: Sequelize) => {
     {
       sequelize,
       tableName: "users",
-      timestamps: true, // включаем обработку времени создания и обновления
-      createdAt: "created_at", // название поля для created_at
-      updatedAt: "updated_at", // название поля для updated_at
+      timestamps: true, 
+      createdAt: "created_at", 
+      updatedAt: "updated_at",
     }
   );
 };

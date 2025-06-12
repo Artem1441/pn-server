@@ -12,7 +12,7 @@ export const getActiveVerificationCode = async (
   type: "phone" | "email",
   value: string,
   code: string
-) => {
+): Promise<IVerificationCode> => {
   const verificationCode = await VerificationCode.findOne({
     where: {
       user_id: userId,
@@ -92,8 +92,21 @@ export const getUserByField = async (
   const user = await User.findOne({
     where: { [field]: value },
   });
-  if (!user) return null
+  if (!user) return null;
   return user.toJSON();
+};
+
+export const getUsersByField = async (
+  field: string,
+  value: string
+): Promise<IUser[] | null> => {
+  const users = await User.findAll({
+    where: { [field]: value },
+  });
+
+  if (!users || users.length === 0) return null;
+
+  return users.map((user) => user.toJSON());
 };
 
 export const createUser = async ({
@@ -160,7 +173,7 @@ export const updatePersonalDataToUser = async ({
   user.passport_main = passport_main;
   user.passport_registration = passport_registration;
   user.photo_front = photo_front;
-  user.registration_status = "under review"
+  user.registration_status = "under review";
   await user.save();
 };
 
@@ -191,6 +204,21 @@ export const updateUserFieldById = async ({
       throw new Error(
         `Validation error while updating field "${field}": ${error.message}`
       );
+    }
+    throw error;
+  }
+};
+
+export const deleteUserById = async (id: number): Promise<void> => {
+  const user = await User.findByPk(id);
+
+  if (!user) throw new Error(errors.userNotFound);
+
+  try {
+    await user.destroy();
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      throw new Error(`Failed to delete user with ID ${error.message}`);
     }
     throw error;
   }

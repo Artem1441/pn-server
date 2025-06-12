@@ -1,6 +1,7 @@
 import { Router } from "express";
 import AuthController from "../controllers/auth.controller.js";
 import authenticateTokenMiddleware from "../middlewares/authenticateToken.middleware.js";
+import checkIsAdminMiddleware from "../middlewares/checkIsAdmin.middleware.js";
 import checkResetPasswordMiddleware from "../middlewares/checkResetPassword.middleware.js";
 import checkResetPasswordTokenMiddleware from "../middlewares/checkResetPasswordToken.middleware.js";
 import checkSignUpTokenMiddleware from "../middlewares/checkSignUpToken.middleware.js";
@@ -159,6 +160,20 @@ router.post(
   "/auth/resetPassword",
   checkResetPasswordMiddleware,
   AuthController.resetPassword
+);
+
+router.post(
+  "/auth/confirmEmployeeForm",
+  authenticateTokenMiddleware,
+  checkIsAdminMiddleware,
+  AuthController.confirmEmployeeForm
+);
+
+router.post(
+  "/auth/refuseEmployeeForm",
+  authenticateTokenMiddleware,
+  checkIsAdminMiddleware,
+  AuthController.refuseEmployeeForm
 );
 
 export default router;

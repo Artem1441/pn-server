@@ -9,7 +9,7 @@ export const generateLogin = (name: string, surname: string): string => {
 };
 
 export const generatePassword = (): string => {
-  return crypto.randomBytes(4).toString("hex");
+  return crypto.randomBytes(8).toString("hex");
 };
 
 export const generateVerificationCode = async (

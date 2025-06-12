@@ -1,5 +1,4 @@
-
-import { S3, GetObjectCommand } from "@aws-sdk/client-s3"; 
+import { S3, GetObjectCommand } from "@aws-sdk/client-s3";
 import { Readable } from "stream";
 import dotenv from "dotenv";
 dotenv.config();
@@ -29,10 +28,8 @@ export const S3Upload = async (
       CacheControl: "max-age=31536000", // Контроль кеширования
     };
 
-    await s3.putObject(params); 
+    await s3.putObject(params);
 
-    // const fileUrl = `${process.env.S3_ENDPOINT}/${process.env.S3_BUCKET}/${fileKey}`;
-    // return fileUrl;
   } catch (error: any) {
     console.error("Ошибка загрузки в S3:", error);
   }

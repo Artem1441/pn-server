@@ -2,7 +2,8 @@ const registrationStages = {
   accessionAgreement: "accession agreement",
   identificationData: "identification data",
   personalData: "personal data",
-  waitingRoom: "waiting room"
+  waitingRoom: "waiting room",
+  homePage: "home page"
 } as const;
 
 type RegistrationStageKeys = keyof typeof registrationStages;

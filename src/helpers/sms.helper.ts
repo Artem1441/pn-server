@@ -1,5 +1,7 @@
 import axios from "axios";
 import dotenv from "dotenv";
+import errors from "../constants/errors";
+import { sendErrorToTelegram } from "./telegram.helper";
 dotenv.config();
 
 export const sendSms = async (phone: string, message: string) => {
@@ -21,19 +23,22 @@ export const sendSms = async (phone: string, message: string) => {
   try {
     const response = await axios.post(url, params);
     const data = response.data;
+    console.log(response.data)
 
-    if (data.id) {
+    if (!data.error) {
       return {
         status: true,
         data: data.id,
       };
     } else {
+      sendErrorToTelegram(`${errors.smsSendError}: ${data.error}`)
       return {
         status: false,
         message: `Ошибка: ${data.error_code} - ${data.error}`,
       };
     }
   } catch (error) {
+    sendErrorToTelegram(errors.smsSendError)
     return { status: false, message: "Ошибка при отправке письма по смс" };
   }
 };

@@ -16,8 +16,8 @@ const authenticateTokenMiddleware = (
 
   try {
     const decoded = jwtVerify(token);
-    req.body.user = decoded; // Добавляем декодированный токен в объект запроса
-
+    req.body.user = decoded; 
+    
     next();
   } catch (error) {
     res.status(403).json({ status: false, error: "Недействительный токен" });
