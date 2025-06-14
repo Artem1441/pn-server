@@ -1,4 +1,4 @@
-interface IVerificationCode {
+export default interface IVerificationCode {
   id: number;
   user_id: number;
   type: "phone" | "email";
@@ -8,5 +8,3 @@ interface IVerificationCode {
   is_used: boolean;
   created_at: Date;
 }
-
-export default IVerificationCode;

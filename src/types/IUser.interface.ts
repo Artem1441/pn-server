@@ -1,6 +1,6 @@
 import RoleType from "./RoleType.type";
 
-interface IUser {
+export default interface IUser {
   id: number;
   role: RoleType;
   login: string;
@@ -56,5 +56,3 @@ interface IUser {
   created_at: Date;
   updated_at: Date;
 }
-
-export default IUser;

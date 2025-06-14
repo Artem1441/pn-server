@@ -259,7 +259,7 @@ export const updateStudio = async ({
 
     await studio.save();
   } catch (err) {
-    console.error("Ошибка при получении информации студий:", err);
+    console.error("Ошибка при обновлении информации о студии:", err);
     throw null;
   }
 };
@@ -272,7 +272,7 @@ export const deleteStudio = async (id: IStudio["id"]): Promise<void> => {
 
     await studio.destroy();
   } catch (err) {
-    console.error("Ошибка при получении удалении студии:", err);
+    console.error("Ошибка при удалении студии:", err);
     throw null;
   }
 };

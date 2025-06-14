@@ -1,4 +1,4 @@
-interface IStudio {
+export default interface IStudio {
   id: number;
   name: string; // краткий адрес
 
@@ -47,5 +47,3 @@ interface IStudio {
   created_at: Date;
   updated_at: Date;
 }
-
-export default IStudio;

@@ -6,6 +6,7 @@ import authRouter from "./routes/auth.route.js";
 import cloudRouter from "./routes/cloud.route.js";
 import notificationRouter from "./routes/notification.route.js";
 import informationRouter from "./routes/information.route.js";
+import cityRouter from "./routes/city.route.js";
 import studioRouter from "./routes/studio.route.js";
 import swaggerRoute from "./routes/swagger.route.js";
 import sequelize from "./db/index.js";
@@ -14,6 +15,7 @@ import { initVerificationCodeModel } from "./models/VerificationCode.model.js";
 import { initInformationModel } from "./models/Information.model.js";
 import { initInformationChangeModel } from "./models/InformationChange.model.js";
 import { initStudioModel } from "./models/Studio.model.js";
+import { initCityModel } from "./models/City.model.js";
 dotenv.config();
 
 const app = express();
@@ -40,6 +42,7 @@ app.use("/api", cloudRouter);
 app.use("/api", notificationRouter);
 app.use("/api", informationRouter);
 app.use("/api", studioRouter);
+app.use("/api", cityRouter);
 app.use("/api", swaggerRoute);
 
 
@@ -50,6 +53,7 @@ app.use("/api", swaggerRoute);
   initInformationModel(sequelize);
   initInformationChangeModel(sequelize);
   initStudioModel(sequelize);
+  initCityModel(sequelize)
 
   app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
 })();

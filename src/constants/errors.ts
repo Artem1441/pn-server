@@ -21,6 +21,7 @@ const errors = {
 
   userNotFound: "Пользователь не найден",
   studioNotFound: "Студия не найдена",
+  cityNotFound: "Город не найден",
 
   userNotAdmin: "Пользователь не админ",
 
@@ -65,7 +66,9 @@ const errors = {
 
   smsSendError: "Ошибка при отправке sms",
 
-  studioShortNameRequired: "Краткое название студии не должно быть пустым"
+  studioShortNameRequired: "Название студии не должно быть пустым",
+
+  cityShortNameRequired: "Название города не должно быть пустым"
 
 };
 
