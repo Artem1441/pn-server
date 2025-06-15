@@ -85,9 +85,9 @@ class CityController {
         status: true,
       });
       return;
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ status: false, error: errors.serverError });
+    } catch (err: any) {
+      console.log(err.message);
+      res.status(500).json({ status: false, error: err.message || errors.serverError });
       return;
     }
   };

@@ -70,8 +70,9 @@ const errors = {
   studioShortNameRequired: "Название студии не должно быть пустым",
   studioDateInvalid: "Дата указана некорректно",
 
-  cityShortNameRequired: "Название города не должно быть пустым"
+  cityShortNameRequired: "Название города не должно быть пустым",
 
+  cannotDeleteEntityBecauseItIsUsed: "Невозможно удалить запись: она используется в другой таблице"
 };
 
 export default errors;

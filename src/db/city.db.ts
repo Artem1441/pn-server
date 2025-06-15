@@ -42,7 +42,15 @@ export const deleteCity = async (id: ICity["id"]): Promise<void> => {
     if (!city) throw new Error(errors.cityNotFound);
 
     await city.destroy();
-  } catch (err) {
+  } catch (err: any) {
+    if (err.name === "SequelizeForeignKeyConstraintError") {
+      console.error(
+        "Невозможно удалить город: он используется в других таблицах",
+        err
+      );
+      throw new Error(errors.cannotDeleteEntityBecauseItIsUsed);
+    }
+
     console.error("Ошибка при удалении города:", err);
     throw null;
   }

@@ -132,6 +132,30 @@ CREATE TABLE public.information_changes (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- cities
+
+CREATE TABLE public.cities (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE OR REPLACE FUNCTION update_cities_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_cities_updated_at
+BEFORE UPDATE ON public.cities
+FOR EACH ROW
+EXECUTE FUNCTION update_cities_updated_at();
+
 -- studios
 
 CREATE TABLE public.studios (
@@ -185,7 +209,7 @@ CREATE TABLE public.studios (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_studios_city FOREIGN KEY (city_id) REFERENCES public.cities(id) ON DELETE SET NULL
+    CONSTRAINT fk_studios_city FOREIGN KEY (city_id) REFERENCES public.cities(id) ON DELETE RESTRICT
 );
 
 CREATE OR REPLACE FUNCTION update_studios_updated_at()
@@ -201,26 +225,3 @@ BEFORE UPDATE ON public.studios
 FOR EACH ROW
 EXECUTE FUNCTION update_studios_updated_at();
 
--- cities
-
-CREATE TABLE public.cities (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
-
-CREATE OR REPLACE FUNCTION update_cities_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = CURRENT_TIMESTAMP;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trigger_update_cities_updated_at
-BEFORE UPDATE ON public.cities
-FOR EACH ROW
-EXECUTE FUNCTION update_cities_updated_at();

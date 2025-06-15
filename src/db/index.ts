@@ -11,7 +11,8 @@ const sequelize = new Sequelize(
     host: String(process.env.DB_HOST),
     port: Number(process.env.DB_PORT),
     dialect: 'postgres',
-    logging: true, // Включаем логирование запросов (отключить в проде)
+    // logging: true, // Включаем логирование запросов (отключить в проде)
+    logging: false,
   }
 );
 
