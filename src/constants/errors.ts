@@ -66,7 +66,9 @@ const errors = {
 
   smsSendError: "Ошибка при отправке sms",
 
+  studioCityRequired: "У студии должен быть выбран город",
   studioShortNameRequired: "Название студии не должно быть пустым",
+  studioDateInvalid: "Дата указана некорректно",
 
   cityShortNameRequired: "Название города не должно быть пустым"
 

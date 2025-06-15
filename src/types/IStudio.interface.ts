@@ -1,6 +1,10 @@
+import ICity from "./ICity.interface";
+
 export default interface IStudio {
   id: number;
-  name: string; // краткий адрес
+  city_id: number;
+  city?: ICity;
+  name: string; 
 
   general_full_address?: string;
   general_area?: string;

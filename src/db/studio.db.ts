@@ -1,8 +1,10 @@
 import errors from "../constants/errors";
+import { City } from "../models/City.model";
 import { Studio } from "../models/Studio.model";
 import IStudio from "../types/IStudio.interface";
 
 export const createStudio = async ({
+  city_id,
   name,
   general_full_address,
   general_area,
@@ -41,6 +43,7 @@ export const createStudio = async ({
   general_sublease_contact_phone,
   general_sublease_contact_email,
 }: {
+  city_id: IStudio["city_id"];
   name: IStudio["name"];
   general_full_address: IStudio["general_full_address"];
   general_area: IStudio["general_area"];
@@ -81,6 +84,7 @@ export const createStudio = async ({
 }): Promise<number> => {
   try {
     const studio = await Studio.create({
+      city_id,
       name,
 
       general_full_address,
@@ -111,9 +115,9 @@ export const createStudio = async ({
       general_alarm_code,
       general_lock_code,
 
-      general_services_mani,
-      general_services_pedi,
-      general_services_brows,
+      general_services_mani: Number(general_services_mani),
+      general_services_pedi: Number(general_services_pedi),
+      general_services_brows: Number(general_services_brows),
 
       general_sublease_available,
       general_sublease_area,
@@ -135,6 +139,7 @@ export const createStudio = async ({
 
 export const updateStudio = async ({
   id,
+  city_id,
   name,
   general_full_address,
   general_area,
@@ -174,6 +179,7 @@ export const updateStudio = async ({
   general_sublease_contact_email,
 }: {
   id: IStudio["id"];
+  city_id: IStudio["city_id"];
   name: IStudio["name"];
   general_full_address: IStudio["general_full_address"];
   general_area: IStudio["general_area"];
@@ -215,6 +221,7 @@ export const updateStudio = async ({
   try {
     const studio = await Studio.findByPk(id);
     if (!studio) throw null;
+    studio.city_id = city_id;
     studio.name = name;
     studio.general_full_address = general_full_address;
     studio.general_area = general_area;
@@ -240,9 +247,9 @@ export const updateStudio = async ({
     studio.general_wifi_password = general_wifi_password;
     studio.general_alarm_code = general_alarm_code;
     studio.general_lock_code = general_lock_code;
-    studio.general_services_mani = general_services_mani;
-    studio.general_services_pedi = general_services_pedi;
-    studio.general_services_brows = general_services_brows;
+    studio.general_services_mani = Number(general_services_mani);
+    studio.general_services_pedi = Number(general_services_pedi);
+    studio.general_services_brows = Number(general_services_brows);
     studio.general_sublease_available = general_sublease_available;
     studio.general_sublease_area = general_sublease_area;
     studio.general_sublease_activity_type = general_sublease_activity_type;
@@ -279,8 +286,18 @@ export const deleteStudio = async (id: IStudio["id"]): Promise<void> => {
 
 export const getStudios = async (): Promise<IStudio[]> => {
   try {
-    const studios = await Studio.findAll();
+    const studios = await Studio.findAll({
+      include: [
+        {
+          model: City,
+          as: "city",
+          required: false,
+        },
+      ],
+    });
+
     if (!studios) throw null;
+
     return studios;
   } catch (error) {
     console.error("Ошибка при получении информации студий:", error);

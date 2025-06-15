@@ -33,6 +33,7 @@ class StudioController {
     res: Response<IResp<null>>
   ): Promise<void> => {
     const {
+      city_id,
       name,
       general_full_address,
       general_area,
@@ -74,6 +75,7 @@ class StudioController {
 
     try {
       await createStudio({
+        city_id,
         name,
         general_full_address,
         general_area,
@@ -130,6 +132,7 @@ class StudioController {
   ): Promise<void> => {
     const {
       id,
+      city_id,
       name,
       general_full_address,
       general_area,
@@ -172,6 +175,7 @@ class StudioController {
     try {
       await updateStudio({
         id,
+        city_id,
         name,
         general_full_address,
         general_area,

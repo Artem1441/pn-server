@@ -44,10 +44,12 @@ interface StudioCreationAttributes
     | "general_sublease_rent_price_per_sqm"
     | "created_at"
     | "updated_at"
+    | "city_id"
   > {}
 
 export class Studio extends Model<IStudio, StudioCreationAttributes> implements IStudio {
   public id!: number;
+  public city_id!: number;
   public name!: string;
 
   public general_full_address?: string;
@@ -108,7 +110,14 @@ export const initStudioModel = (sequelize: Sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
-
+      city_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true, // или false, если будешь заполнять все записи
+        references: {
+          model: 'cities', // имя таблицы
+          key: 'id'        // колонка в cities
+        }
+      },
       general_full_address: {
         type: DataTypes.TEXT,
         allowNull: true,

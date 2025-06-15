@@ -136,6 +136,7 @@ CREATE TABLE public.information_changes (
 
 CREATE TABLE public.studios (
     id SERIAL PRIMARY KEY,
+    city_id INTEGER, -- ссылка на город из таблицы public.cities
     name TEXT NOT NULL, -- краткий адрес
 
     general_full_address TEXT, -- полный адрес студии
@@ -182,7 +183,9 @@ CREATE TABLE public.studios (
     general_sublease_contact_email VARCHAR(255), -- почта субарендатора
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_studios_city FOREIGN KEY (city_id) REFERENCES public.cities(id) ON DELETE SET NULL
 );
 
 CREATE OR REPLACE FUNCTION update_studios_updated_at()

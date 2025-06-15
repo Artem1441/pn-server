@@ -14,8 +14,8 @@ import { initUserModel } from "./models/User.model.js";
 import { initVerificationCodeModel } from "./models/VerificationCode.model.js";
 import { initInformationModel } from "./models/Information.model.js";
 import { initInformationChangeModel } from "./models/InformationChange.model.js";
-import { initStudioModel } from "./models/Studio.model.js";
-import { initCityModel } from "./models/City.model.js";
+import { initStudioModel, Studio } from "./models/Studio.model.js";
+import { City, initCityModel } from "./models/City.model.js";
 dotenv.config();
 
 const app = express();
@@ -45,7 +45,6 @@ app.use("/api", studioRouter);
 app.use("/api", cityRouter);
 app.use("/api", swaggerRoute);
 
-
 (async () => {
   await sequelize.authenticate();
   initUserModel(sequelize);
@@ -53,7 +52,17 @@ app.use("/api", swaggerRoute);
   initInformationModel(sequelize);
   initInformationChangeModel(sequelize);
   initStudioModel(sequelize);
-  initCityModel(sequelize)
+  initCityModel(sequelize);
+
+  Studio.belongsTo(City, {
+    foreignKey: "city_id",
+    as: "city",
+  });
+
+  City.hasMany(Studio, {
+    foreignKey: "city_id",
+    as: "studios",
+  });
 
   app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
 })();
