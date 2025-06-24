@@ -225,3 +225,37 @@ BEFORE UPDATE ON public.studios
 FOR EACH ROW
 EXECUTE FUNCTION update_studios_updated_at();
 
+
+-- prices
+
+CREATE TABLE public.prices (
+    id SERIAL PRIMARY KEY,
+    city_id INTEGER, -- ссылка на город из таблицы public.cities
+    self_employed_data JSONB NOT NULL, -- для самозанятых
+    clients_mani_data JSONB NOT NULL, -- для клиентов маникюр
+    clients_pedi_data JSONB NOT NULL, -- для клиентов педикюр
+    clients_mani_pedi_four_hands_data JSONB NOT NULL, -- для клиентов маникюр и педикюр в 4 руки
+    clients_design_data JSONB NOT NULL, -- для клиентов дизайн
+    clients_additional_nail_services_data JSONB NOT NULL, -- для клиентов дополнительные услуги ногтевого сервиса
+    clients_brow_arch_data JSONB NOT NULL, -- для клиентов архитектура бровей
+    clients_promo_data JSONB NOT NULL, -- для клиентов акции
+    clients_model_data JSONB NOT NULL, -- для клиентов модели на маникюр
+    clients_goods_data JSONB NOT NULL, -- для клиентов товары
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_prices_city FOREIGN KEY (city_id) REFERENCES public.cities(id) ON DELETE RESTRICT
+);
+
+CREATE OR REPLACE FUNCTION update_prices_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_prices_updated_at
+BEFORE UPDATE ON public.prices
+FOR EACH ROW
+EXECUTE FUNCTION update_prices_updated_at();

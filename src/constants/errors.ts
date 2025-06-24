@@ -22,6 +22,7 @@ const errors = {
   userNotFound: "Пользователь не найден",
   studioNotFound: "Студия не найдена",
   cityNotFound: "Город не найден",
+  priceNotFound: "Цена не найдена",
 
   userNotAdmin: "Пользователь не админ",
 
@@ -67,6 +68,7 @@ const errors = {
   smsSendError: "Ошибка при отправке sms",
 
   studioCityRequired: "У студии должен быть выбран город",
+  priceCityRequired: "У цен должен быть выбран город",
   studioShortNameRequired: "Название студии не должно быть пустым",
   studioDateInvalid: "Дата указана некорректно",
 
