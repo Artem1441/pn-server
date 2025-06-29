@@ -55,7 +55,6 @@ export const initInformationChangeModel = (sequelize: Sequelize) => {
       sequelize,
       tableName: "information_changes",
       timestamps: false,
-      freezeTableName: true,
     }
   );
 };

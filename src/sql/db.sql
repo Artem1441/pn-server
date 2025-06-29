@@ -259,3 +259,27 @@ CREATE TRIGGER trigger_update_prices_updated_at
 BEFORE UPDATE ON public.prices
 FOR EACH ROW
 EXECUTE FUNCTION update_prices_updated_at();
+
+-- motivation
+
+CREATE TABLE public.motivation (
+    id SERIAL PRIMARY KEY,
+    allowance_data JSONB NOT NULL, 
+    deduction_data JSONB NOT NULL,
+
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION update_motivation_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_motivation_updated_at
+BEFORE UPDATE ON public.motivation
+FOR EACH ROW
+EXECUTE FUNCTION update_motivation_updated_at();
+

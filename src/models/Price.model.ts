@@ -1,8 +1,6 @@
 import { Model, DataTypes, Sequelize } from "sequelize";
 import { Optional } from "sequelize";
-import IPrice from "../types/IPrice.interface";
-import IPriceClientsDataItem from "../types/IPriceClientsDataItem.interface";
-import IPriceSelfEmployedDataItem from "../types/IPriceSelfEmployedDataItem.interface";
+import IPrice, { IPriceClientsDataItem, IPriceSelfEmployedDataItem } from "../types/IPrice.interface";
 
 interface PriceCreationAttributes
   extends Optional<

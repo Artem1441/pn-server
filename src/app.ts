@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import authRouter from "./routes/auth.route.js";
 import cloudRouter from "./routes/cloud.route.js";
 import priceRouter from "./routes/price.route.js";
+import motivationRouter from "./routes/motivation.route.js";
 import notificationRouter from "./routes/notification.route.js";
 import informationRouter from "./routes/information.route.js";
 import cityRouter from "./routes/city.route.js";
@@ -18,6 +19,7 @@ import { initInformationChangeModel } from "./models/InformationChange.model.js"
 import { initStudioModel, Studio } from "./models/Studio.model.js";
 import { City, initCityModel } from "./models/City.model.js";
 import { initPriceModel, Price } from "./models/Price.model.js";
+import { initMotivationModel } from "./models/Motivation.model.js";
 dotenv.config();
 
 const app = express();
@@ -46,6 +48,7 @@ app.use("/api", informationRouter);
 app.use("/api", studioRouter);
 app.use("/api", cityRouter);
 app.use("/api", priceRouter);
+app.use("/api", motivationRouter);
 app.use("/api", swaggerRoute);
 
 (async () => {
@@ -57,6 +60,7 @@ app.use("/api", swaggerRoute);
   initStudioModel(sequelize);
   initCityModel(sequelize);
   initPriceModel(sequelize);
+  initMotivationModel(sequelize);
 
   // Studio
   Studio.belongsTo(City, {

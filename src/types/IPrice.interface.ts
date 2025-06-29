@@ -1,6 +1,3 @@
-import IPriceClientsDataItem from "./IPriceClientsDataItem.interface";
-import IPriceSelfEmployedDataItem from "./IPriceSelfEmployedDataItem.interface";
-
 export default interface IPrice {
   id: number;
   city_id: number;
@@ -16,4 +13,17 @@ export default interface IPrice {
   clients_goods_data: IPriceClientsDataItem[];
   created_at: Date;
   updated_at: Date;
+}
+export interface IPriceClientsDataItem {
+  name: string;
+  from: boolean;
+  price: number | null;
+  time: number | null;
+}
+
+export interface IPriceSelfEmployedDataItem {
+  name: string;
+  rent_price: number | null;
+  agent_price: number | null;
+  other: number | null;
 }

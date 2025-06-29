@@ -197,7 +197,6 @@ export const initInformationModel = (sequelize: Sequelize) => {
       timestamps: true, 
       createdAt: false, 
       updatedAt: "updated_at",
-      freezeTableName: true,
     }
   );
 };
