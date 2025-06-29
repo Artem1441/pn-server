@@ -11,6 +11,7 @@ import informationRouter from "./routes/information.route.js";
 import cityRouter from "./routes/city.route.js";
 import studioRouter from "./routes/studio.route.js";
 import swaggerRoute from "./routes/swagger.route.js";
+import specialityRouter from "./routes/speciality.route.js";
 import sequelize from "./db/index.js";
 import { initUserModel } from "./models/User.model.js";
 import { initVerificationCodeModel } from "./models/VerificationCode.model.js";
@@ -20,6 +21,7 @@ import { initStudioModel, Studio } from "./models/Studio.model.js";
 import { City, initCityModel } from "./models/City.model.js";
 import { initPriceModel, Price } from "./models/Price.model.js";
 import { initMotivationModel } from "./models/Motivation.model.js";
+import { initSpecialityModel } from "./models/Speciality.model.js";
 dotenv.config();
 
 const app = express();
@@ -49,6 +51,7 @@ app.use("/api", studioRouter);
 app.use("/api", cityRouter);
 app.use("/api", priceRouter);
 app.use("/api", motivationRouter);
+app.use("/api", specialityRouter);
 app.use("/api", swaggerRoute);
 
 (async () => {
@@ -61,6 +64,7 @@ app.use("/api", swaggerRoute);
   initCityModel(sequelize);
   initPriceModel(sequelize);
   initMotivationModel(sequelize);
+  initSpecialityModel(sequelize);
 
   // Studio
   Studio.belongsTo(City, {

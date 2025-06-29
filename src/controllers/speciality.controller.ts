@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import errors from "../constants/errors";
-import { createCity, deleteCity, getCities, updateCity } from "../db/city.db";
-import ICity from "../types/ICity.interface";
+import { createSpeciality, deleteSpeciality, getSpecialities, updateSpeciality } from "../db/speciality.db";
 import IResp from "../types/IResp.interface";
+import ISpeciality from "../types/ISpeciality.interface";
 
-class CityController {
-  getCities = async (
+class SpecialityController {
+  getSpecialities = async (
     req: Request,
-    res: Response<IResp<ICity[]>>
+    res: Response<IResp<ISpeciality[]>>
   ): Promise<void> => {
     try {
-      const cities = await getCities();
+      const specialities = await getSpecialities();
       res.status(200).json({
         status: true,
-        data: cities,
+        data: specialities,
       });
       return;
     } catch (err) {
@@ -23,14 +23,14 @@ class CityController {
     }
   };
 
-  createCity = async (
+  createSpeciality = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
     const { name } = req.body;
 
     try {
-      await createCity({
+      await createSpeciality({
         name,
       });
 
@@ -45,13 +45,13 @@ class CityController {
     }
   };
 
-  updateCity = async (
+  updateSpeciality = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
     const { id, name } = req.body;
     try {
-      await updateCity({
+      await updateSpeciality({
         id,
         name,
       });
@@ -66,13 +66,13 @@ class CityController {
     }
   };
 
-  deleteCity = async (
+  deleteSpeciality = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
     const { id } = req.query;
     try {
-      if (id) await deleteCity(Number(id));
+      if (id) await deleteSpeciality(Number(id));
       res.status(200).json({
         status: true,
       });
@@ -85,4 +85,4 @@ class CityController {
   };
 }
 
-export default new CityController();
+export default new SpecialityController();

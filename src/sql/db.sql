@@ -283,3 +283,77 @@ BEFORE UPDATE ON public.motivation
 FOR EACH ROW
 EXECUTE FUNCTION update_motivation_updated_at();
 
+-- specialities
+
+CREATE TABLE public.specialities (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION update_specialities_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_specialities_updated_at
+BEFORE UPDATE ON public.specialities
+FOR EACH ROW
+EXECUTE FUNCTION update_specialities_updated_at();
+
+-- periodicity
+
+CREATE TABLE public.periodicity (
+    id SERIAL PRIMARY KEY,
+    reporting_frequency VARCHAR(255) NOT NULL CHECK (reporting_frequency IN ('1week', '2week')) DEFAULT '2week',
+    reporting_day_of_week VARCHAR(255) NOT NULL CHECK (reporting_day_of_week IN ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')) DEFAULT 'sunday',
+    document_send_frequency VARCHAR(255) NOT NULL CHECK (reporting_day_of_week IN ('daily', 'weekly', 'monthly', 'quarterly', 'semiannually', 'annually')) DEFAULT 'monthly',
+    document_send_email VARCHAR(255) NOT NULL,
+
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE OR REPLACE FUNCTION update_periodicity_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_periodicity_updated_at
+BEFORE UPDATE ON public.periodicity
+FOR EACH ROW
+EXECUTE FUNCTION update_periodicity_updated_at();
+
+-- termination_reasons
+
+CREATE TABLE public.termination_reasons (
+    id SERIAL PRIMARY KEY,
+    speciality_id INTEGER,
+    reason VARCHAR(255) NOT NULL, 
+    description TEXT NOT NULL, 
+    
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_termination_reason_speciality_id FOREIGN KEY (speciality_id) REFERENCES public.specialities(id) ON DELETE RESTRICT
+);
+
+CREATE OR REPLACE FUNCTION update_termination_reasons_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_update_termination_reasons_updated_at
+BEFORE UPDATE ON public.termination_reasons
+FOR EACH ROW
+EXECUTE FUNCTION update_termination_reasons_updated_at();

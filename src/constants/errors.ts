@@ -23,6 +23,7 @@ const errors = {
   studioNotFound: "Студия не найдена",
   cityNotFound: "Город не найден",
   priceNotFound: "Цена не найдена",
+  specialityNotFound: "Специальность не найдена",
 
   userNotAdmin: "Пользователь не админ",
 
@@ -73,6 +74,7 @@ const errors = {
   studioDateInvalid: "Дата указана некорректно",
 
   cityShortNameRequired: "Название города не должно быть пустым",
+  specialityShortNameRequired: "Название специальности не должно быть пустым",
 
   cannotDeleteEntityBecauseItIsUsed: "Невозможно удалить запись: она используется в другой таблице"
 };
