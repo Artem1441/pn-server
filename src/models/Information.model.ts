@@ -108,13 +108,11 @@ export const initInformationModel = (sequelize: Sequelize) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-
       general_role: {
         type: DataTypes.ENUM("director", "authorized_person"),
         allowNull: false,
         defaultValue: "director",
       },
-
       legal_address: {
         type: DataTypes.TEXT,
         allowNull: true,

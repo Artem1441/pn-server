@@ -11,7 +11,6 @@ class MotivationController {
   ): Promise<void> => {
     try {
       const motivation = await getMotivation();
-      console.log(motivation)
       res.status(200).json({
         status: true,
         data: motivation,

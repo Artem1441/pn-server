@@ -106,10 +106,6 @@ export const initStudioModel = (sequelize: Sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
-        type: DataTypes.STRING(255),
-        allowNull: false,
-      },
       city_id: {
         type: DataTypes.INTEGER,
         allowNull: true, // или false, если будешь заполнять все записи
@@ -117,6 +113,10 @@ export const initStudioModel = (sequelize: Sequelize) => {
           model: 'cities', // имя таблицы
           key: 'id'        // колонка в cities
         }
+      },
+      name: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
       },
       general_full_address: {
         type: DataTypes.TEXT,

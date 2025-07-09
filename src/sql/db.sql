@@ -312,7 +312,7 @@ CREATE TABLE public.periodicity (
     id SERIAL PRIMARY KEY,
     reporting_frequency VARCHAR(255) NOT NULL CHECK (reporting_frequency IN ('1week', '2week')) DEFAULT '2week',
     reporting_day_of_week VARCHAR(255) NOT NULL CHECK (reporting_day_of_week IN ('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday')) DEFAULT 'sunday',
-    document_send_frequency VARCHAR(255) NOT NULL CHECK (reporting_day_of_week IN ('daily', 'weekly', 'monthly', 'quarterly', 'semiannually', 'annually')) DEFAULT 'monthly',
+    document_send_frequency VARCHAR(255) NOT NULL CHECK (document_send_frequency IN ('daily', 'weekly', 'monthly', 'quarterly', 'semiannually', 'annually')) DEFAULT 'monthly',
     document_send_email VARCHAR(255) NOT NULL,
 
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

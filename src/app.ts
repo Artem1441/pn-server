@@ -11,6 +11,7 @@ import informationRouter from "./routes/information.route.js";
 import cityRouter from "./routes/city.route.js";
 import studioRouter from "./routes/studio.route.js";
 import swaggerRoute from "./routes/swagger.route.js";
+import settingsRouter from "./routes/settings.route.js";
 import specialityRouter from "./routes/speciality.route.js";
 import sequelize from "./db/index.js";
 import { initUserModel } from "./models/User.model.js";
@@ -21,7 +22,12 @@ import { initStudioModel, Studio } from "./models/Studio.model.js";
 import { City, initCityModel } from "./models/City.model.js";
 import { initPriceModel, Price } from "./models/Price.model.js";
 import { initMotivationModel } from "./models/Motivation.model.js";
-import { initSpecialityModel } from "./models/Speciality.model.js";
+import { initSpecialityModel, Speciality } from "./models/Speciality.model.js";
+import { initPeriodicityModel } from "./models/Periodicity.model.js";
+import {
+  initTerminationReasonModel,
+  TerminationReason,
+} from "./models/TerminationReason.model.js";
 dotenv.config();
 
 const app = express();
@@ -51,6 +57,7 @@ app.use("/api", studioRouter);
 app.use("/api", cityRouter);
 app.use("/api", priceRouter);
 app.use("/api", motivationRouter);
+app.use("/api", settingsRouter);
 app.use("/api", specialityRouter);
 app.use("/api", swaggerRoute);
 
@@ -65,6 +72,8 @@ app.use("/api", swaggerRoute);
   initPriceModel(sequelize);
   initMotivationModel(sequelize);
   initSpecialityModel(sequelize);
+  initPeriodicityModel(sequelize);
+  initTerminationReasonModel(sequelize);
 
   // Studio
   Studio.belongsTo(City, {
@@ -86,6 +95,17 @@ app.use("/api", swaggerRoute);
   City.hasMany(Price, {
     foreignKey: "city_id",
     as: "prices",
+  });
+
+  // TerminationReason
+  TerminationReason.belongsTo(Speciality, {
+    foreignKey: "speciality_id",
+    as: "speciality",
+  });
+
+  Speciality.hasMany(TerminationReason, {
+    foreignKey: "speciality_id",
+    as: "termination_reasons",
   });
 
   app.listen(PORT, () => console.log(`http://localhost:${PORT}`));

@@ -132,7 +132,7 @@ export const createStudio = async ({
     });
     return studio.id;
   } catch (error) {
-    console.error("Ошибка при получении информации студий:", error);
+    console.error("Ошибка при получении создании студии:", error);
     return -1;
   }
 };
