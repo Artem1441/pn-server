@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db-postgresql:
+    image: postgres:14
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_DB=nails
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=14410
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - 54321:5432
+

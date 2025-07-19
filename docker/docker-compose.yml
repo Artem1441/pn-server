@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  db-postgresql:
+    extends:
+      file: ./db/docker-compose.yml
+      service: db-postgresql
+
+volumes:
+  db_data:  
+    name: backend_db_postgres_data  
+    driver: local
+  
+networks:
+  default:
+    name: backend
+    driver: bridge
