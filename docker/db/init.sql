@@ -351,6 +351,48 @@ END;
 $$ LANGUAGE plpgsql;
 CREATE TRIGGER trigger_update_termination_reasons_updated_at BEFORE
 UPDATE ON public.termination_reasons FOR EACH ROW EXECUTE FUNCTION update_termination_reasons_updated_at();
+--docxs
+CREATE TABLE public.docxs (
+    id SERIAL PRIMARY KEY,
+    file_key TEXT,
+    file_type VARCHAR(255) NOT NULL CHECK (
+        file_type IN (
+            'accession_agreement',
+            -- ДОГОВОР ПРИСОЕДИНЕНИЯ
+            'accession_application',
+            -- ЗАЯВЛЕНИЕ О ПРИСОЕДИНЕНИИ
+            'workplace_rent_nail_master',
+            -- ДОГОВОР АРЕНДЫ РАБОЧЕГО МЕСТА С МАСТЕРОМ НОГТЕВОГО СЕРВИСА
+            'workplace_transfer_act_nail',
+            -- АКТ ПРИЕМА-ПЕРЕДАЧИ РАБОЧЕГО МЕСТА В АРЕНДУ МАСТЕРОМ НОГТЕВОГО СЕРВИСА
+            'workplace_return_act_nail',
+            -- АКТ ВОЗВРАТА РАБОЧЕГО МЕСТА ИЗ АРЕНДЫ МАСТЕРОМ НОГТЕВОГО СЕРВИСА
+            'workplace_rent_brow_master',
+            -- ДОГОВОР АРЕНДЫ РАБОЧЕГО МЕСТА С МАСТЕРОМ-БРОВИСТОМ
+            'workplace_transfer_act_brow',
+            -- АКТ ПРИЕМА-ПЕРЕДАЧИ РАБОЧЕГО МЕСТА В АРЕНДУ МАСТЕРОМ-БРОВИСТОМ
+            'workplace_return_act_brow',
+            -- АКТ ВОЗВРАТА РАБОЧЕГО МЕСТА ИЗ АРЕНДЫ МАСТЕРОМ БРОВИСТОМ
+            'agent_agreement',
+            -- АГЕНТСКИЙ ДОГОВОР С МАСТЕРАМИ
+            'agent_compensation_policy',
+            -- ПОРЯДОК ОПРЕДЕЛЕНИЯ ВОЗНАГРАЖДЕНИЯ АГЕНТА
+            'agent_report',
+            -- ОТЧЕТ АГЕНТА О ВЫПОЛНЕНИИ ПОРУЧЕНИЯ ПРИНЦИПАЛА
+            'service_act',
+            -- АКТ ОКАЗАННЫХ УСЛУГ
+            'agent_termination_notice' -- УВЕДОМЛЕНИЕ ОБ ОТКАЗЕ ОТ АГЕНТСКОГО ДОГОВОРА
+        )
+    ),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE OR REPLACE FUNCTION update_docxs_updated_at() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = CURRENT_TIMESTAMP;
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER trigger_update_docxs_updated_at BEFORE
+UPDATE ON public.docxs FOR EACH ROW EXECUTE FUNCTION update_docxs_updated_at();
 -- __ADD__DATA__ (no tables)
 INSERT INTO public.users (
         role,

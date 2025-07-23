@@ -278,7 +278,15 @@ export const deleteStudio = async (id: IStudio["id"]): Promise<void> => {
     if (!studio) throw new Error(errors.studioNotFound);
 
     await studio.destroy();
-  } catch (err) {
+  } catch (err: any) {
+    if (err.name === "SequelizeForeignKeyConstraintError") {
+      console.error(
+        "Невозможно удалить студию: она используется в других таблицах",
+        err
+      );
+      throw new Error(errors.cannotDeleteEntityBecauseItIsUsed);
+    }
+
     console.error("Ошибка при удалении студии:", err);
     throw null;
   }

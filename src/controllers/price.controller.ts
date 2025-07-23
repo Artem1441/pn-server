@@ -6,7 +6,7 @@ import IPrice from "../types/IPrice.interface";
 import IResp from "../types/IResp.interface";
 
 class PriceController {
-  getPrices = async (
+  public getPrices = async (
     req: Request,
     res: Response<IResp<IPrice[]>>
   ): Promise<void> => {
@@ -18,13 +18,13 @@ class PriceController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  createPrice = async (
+  public createPrice = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -62,13 +62,13 @@ class PriceController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  updatePrice = async (
+  public updatePrice = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -108,13 +108,13 @@ class PriceController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  deletePrice = async (
+  public deletePrice = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -128,7 +128,7 @@ class PriceController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }

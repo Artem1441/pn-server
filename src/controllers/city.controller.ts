@@ -5,7 +5,7 @@ import ICity from "../types/ICity.interface";
 import IResp from "../types/IResp.interface";
 
 class CityController {
-  getCities = async (
+  public getCities = async (
     req: Request,
     res: Response<IResp<ICity[]>>
   ): Promise<void> => {
@@ -17,13 +17,13 @@ class CityController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  createCity = async (
+  public createCity = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -39,13 +39,13 @@ class CityController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  updateCity = async (
+  public updateCity = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -60,13 +60,13 @@ class CityController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  deleteCity = async (
+  public deleteCity = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -78,7 +78,7 @@ class CityController {
       });
       return;
     } catch (err: any) {
-      console.log(err.message);
+      console.error(err.message);
       res.status(500).json({ status: false, error: err.message || errors.serverError });
       return;
     }

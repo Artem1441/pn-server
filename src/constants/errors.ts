@@ -25,6 +25,7 @@ const errors = {
   priceNotFound: "Цена не найдена",
   specialityNotFound: "Специальность не найдена",
   settingsTerminationReasonNotFound: "Причина для увольнения из настроек не найдена",
+  docxNotFound: "Word-документ не найден",
 
   userNotAdmin: "Пользователь не админ",
 

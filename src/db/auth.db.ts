@@ -142,7 +142,7 @@ export const createUser = async ({
 
     return user.id;
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return -1;
   }
 };

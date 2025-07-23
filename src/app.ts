@@ -12,6 +12,7 @@ import cityRouter from "./routes/city.route.js";
 import studioRouter from "./routes/studio.route.js";
 import swaggerRoute from "./routes/swagger.route.js";
 import settingsRouter from "./routes/settings.route.js";
+import docxRouter from "./routes/docx.route.js";
 import specialityRouter from "./routes/speciality.route.js";
 import sequelize from "./db/index.js";
 import { initUserModel } from "./models/User.model.js";
@@ -28,6 +29,7 @@ import {
   initTerminationReasonModel,
   TerminationReason,
 } from "./models/TerminationReason.model.js";
+import { initDocxModel } from "./models/Docx.model.js";
 dotenv.config();
 
 const app = express();
@@ -59,6 +61,7 @@ app.use("/api", priceRouter);
 app.use("/api", motivationRouter);
 app.use("/api", settingsRouter);
 app.use("/api", specialityRouter);
+app.use("/api", docxRouter);
 app.use("/api", swaggerRoute);
 
 (async () => {
@@ -74,6 +77,7 @@ app.use("/api", swaggerRoute);
   initSpecialityModel(sequelize);
   initPeriodicityModel(sequelize);
   initTerminationReasonModel(sequelize);
+  initDocxModel(sequelize);
 
   // Studio
   Studio.belongsTo(City, {

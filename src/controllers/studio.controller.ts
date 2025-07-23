@@ -10,7 +10,7 @@ import IResp from "../types/IResp.interface";
 import IStudio from "../types/IStudio.interface";
 
 class StudioController {
-  getStudios = async (
+  public getStudios = async (
     req: Request,
     res: Response<IResp<IStudio[]>>
   ): Promise<void> => {
@@ -22,13 +22,13 @@ class StudioController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  createStudio = async (
+  public createStudio = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -120,13 +120,13 @@ class StudioController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  updateStudio = async (
+  public updateStudio = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -220,13 +220,13 @@ class StudioController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  deleteStudio = async (
+  public deleteStudio = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -240,7 +240,7 @@ class StudioController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }

@@ -28,7 +28,7 @@ class SettingsController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -60,7 +60,7 @@ class SettingsController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -94,7 +94,7 @@ class SettingsController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -156,7 +156,7 @@ class SettingsController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }

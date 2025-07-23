@@ -11,7 +11,7 @@ export const createCity = async ({
     const city = await City.create({ name });
     return city.id;
   } catch (error) {
-    console.error("Ошибка при получении создании города:", error);
+    console.error("Ошибка при создании города:", error);
     return -1;
   }
 };

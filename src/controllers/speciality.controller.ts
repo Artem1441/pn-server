@@ -5,7 +5,7 @@ import IResp from "../types/IResp.interface";
 import ISpeciality from "../types/ISpeciality.interface";
 
 class SpecialityController {
-  getSpecialities = async (
+  public getSpecialities = async (
     req: Request,
     res: Response<IResp<ISpeciality[]>>
   ): Promise<void> => {
@@ -17,13 +17,13 @@ class SpecialityController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  createSpeciality = async (
+  public createSpeciality = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -39,13 +39,13 @@ class SpecialityController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  updateSpeciality = async (
+  public updateSpeciality = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -60,13 +60,13 @@ class SpecialityController {
       });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
   };
 
-  deleteSpeciality = async (
+  public deleteSpeciality = async (
     req: Request,
     res: Response<IResp<null>>
   ): Promise<void> => {
@@ -78,7 +78,7 @@ class SpecialityController {
       });
       return;
     } catch (err: any) {
-      console.log(err.message);
+      console.error(err.message);
       res.status(500).json({ status: false, error: err.message || errors.serverError });
       return;
     }

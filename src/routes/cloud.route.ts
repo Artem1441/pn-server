@@ -24,6 +24,8 @@ const router = Router();
  */
 router.get("/cloud/images/:fileKey", CloudController.getImage)
 
+router.get("/cloud/files/:fileKey", CloudController.getFile)
+
 router.post(
   "/cloud/uploadFile",
   upload.single("file"),

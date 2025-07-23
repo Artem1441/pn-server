@@ -85,7 +85,7 @@ class AuthController {
         .json({ status: true });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -105,7 +105,7 @@ class AuthController {
         .json({ status: true, data: { role } });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -177,7 +177,7 @@ class AuthController {
         .json({ status: true });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -220,7 +220,7 @@ class AuthController {
       res.status(200).json({ status: true });
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -248,7 +248,7 @@ class AuthController {
       res.status(response.status ? 200 : 400).json(response);
       return;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
