@@ -23,8 +23,8 @@ class InformationController {
         data: information,
       });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("getInformation error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -65,8 +65,8 @@ class InformationController {
         status: true,
       });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("updateInformation error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -83,8 +83,8 @@ class InformationController {
         data: informationChanges,
       });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("getInformationChanges error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }

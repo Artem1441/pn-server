@@ -26,6 +26,11 @@ import { sendEmail } from "../helpers/mail.helper.js";
 import { bcryptCompare, hashPassword } from "../helpers/bcrypt.helper.js";
 import { sendSms } from "../helpers/sms.helper.js";
 import messages from "../constants/messages.js";
+import { getSpecialities } from "../db/speciality.db.js";
+import { getStudios } from "../db/studio.db.js";
+import IStudio from "../types/IStudio.interface.js";
+import ISpeciality from "../types/ISpeciality.interface.js";
+import { createUserStudio } from "../db/userStudios.db.js";
 dotenv.config();
 
 class AuthController {
@@ -84,8 +89,8 @@ class AuthController {
         .status(200)
         .json({ status: true });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("logout error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -104,8 +109,8 @@ class AuthController {
         .status(200)
         .json({ status: true, data: { role } });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("status error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -176,9 +181,20 @@ class AuthController {
         .status(200)
         .json({ status: true });
       return;
-    } catch (err) {
-      console.error(err);
-      res.status(500).json({ status: false, error: errors.serverError });
+    } catch (err: any) {
+      console.error("signUpCheckIdentificationData error: ", err);
+      if (err.response.data) {
+        const taxpayerServiceError = `Проблема со стороны сервиса "Мой налог": "${err.response.data.message}"`;
+        res.status(500).json({
+          status: false,
+          error: taxpayerServiceError,
+        });
+      } else {
+        res.status(500).json({
+          status: false,
+          error: errors.serverError,
+        });
+      }
       return;
     }
   };
@@ -219,8 +235,8 @@ class AuthController {
 
       res.status(200).json({ status: true });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("signUpCheckPersonalData error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -247,8 +263,8 @@ class AuthController {
 
       res.status(response.status ? 200 : 400).json(response);
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("signUpConfirmCode error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -269,7 +285,8 @@ class AuthController {
 
       res.status(200).json({ status: true });
       return;
-    } catch (err) {
+    } catch (err: any) {
+      console.error("updatePhoto error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -325,7 +342,8 @@ class AuthController {
         .status(200)
         .json({ status: true });
       return;
-    } catch (err: unknown) {
+    } catch (err: any) {
+      console.error("signIn error: ", err);
       let message = errors.serverError;
       if (err instanceof Error) message = err.message;
       else if (typeof err === "string") message = err;
@@ -340,29 +358,34 @@ class AuthController {
     res: Response<IResp<null>>
   ): Promise<void> => {
     const { emailOrLogin } = req.body;
+    try {
+      const userByLogin: IUser | null = await getUserByField(
+        "login",
+        emailOrLogin
+      );
+      const userByEmail: IUser | null = await getUserByField(
+        "email",
+        emailOrLogin
+      );
+      const user = userByLogin ? userByLogin : userByEmail;
 
-    const userByLogin: IUser | null = await getUserByField(
-      "login",
-      emailOrLogin
-    );
-    const userByEmail: IUser | null = await getUserByField(
-      "email",
-      emailOrLogin
-    );
-    const user = userByLogin ? userByLogin : userByEmail;
+      if (!user) {
+        res.status(500).json({ status: false, error: errors.userNotFound });
+        return;
+      }
 
-    if (!user) {
-      res.status(500).json({ status: false, error: errors.userNotFound });
+      const token = jwtSign({ id: user.id, email: user.email }, "1h");
+      const resetLink = `${process.env.CORS_URL}/auth/reset-password?token=${token}`;
+
+      await sendEmail(user.email, "Восстановление пароля", resetLink);
+
+      res.status(200).json({ status: true });
+      return;
+    } catch (err: any) {
+      console.error("forgotPassword error: ", err);
+      res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
-
-    const token = jwtSign({ id: user.id, email: user.email }, "1h");
-    const resetLink = `${process.env.CORS_URL}/auth/reset-password?token=${token}`;
-
-    await sendEmail(user.email, "Восстановление пароля", resetLink);
-
-    res.status(200).json({ status: true });
-    return;
   };
 
   public resetPassword = async (
@@ -381,7 +404,31 @@ class AuthController {
 
       res.status(200).json({ status: true });
       return;
-    } catch (err) {
+    } catch (err: any) {
+      console.error("resetPassword error: ", err);
+      res.status(500).json({ status: false, error: errors.serverError });
+      return;
+    }
+  };
+
+  public getSpecialitiesAndStudios = async (
+    req: Request,
+    res: Response<IResp<{ specialities: ISpeciality[]; studios: IStudio[] }>>
+  ) => {
+    try {
+      const specialities = await getSpecialities();
+      const studios = await getStudios();
+
+      res.status(200).json({
+        status: true,
+        data: {
+          specialities,
+          studios,
+        },
+      });
+      return;
+    } catch (err: any) {
+      console.error("getSpecialitiesAndStudios error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -391,7 +438,15 @@ class AuthController {
     req: Request,
     res: Response<IResp<null>>
   ) => {
-    const { id } = req.body;
+    const {
+      id,
+      speciality_id,
+      studio_ids,
+    }: {
+      id: number;
+      speciality_id: ISpeciality["id"];
+      studio_ids: IStudio["id"][];
+    } = req.body;
     try {
       const user = await getUserById(id);
       await updateUserFieldById({
@@ -399,6 +454,18 @@ class AuthController {
         field: "registration_status",
         value: "confirmed",
       });
+      await updateUserFieldById({
+        id,
+        field: "speciality_id",
+        value: speciality_id,
+      });
+
+      for (const studio_id of studio_ids) {
+        await createUserStudio({
+          user_id: id,
+          studio_id: studio_id,
+        });
+      }
 
       const password = generatePassword();
       const hashedPassword = await hashPassword(password);
@@ -410,12 +477,17 @@ class AuthController {
       });
       const login = user.login;
 
-      await sendEmail(user.email, messages.emailRequestProcessedSent, messages.emailAcceptRequestProcessedSent(login, password));
+      await sendEmail(
+        user.email,
+        messages.emailRequestProcessedSent,
+        messages.emailAcceptRequestProcessedSent(login, password)
+      );
       await sendSms(user.phone, messages.smsRequestProcessedSent);
 
       res.status(200).json({ status: true });
       return;
-    } catch (err) {
+    } catch (err: any) {
+      console.error("forgotPassword error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -430,12 +502,17 @@ class AuthController {
       const user = await getUserById(id);
 
       await deleteUserById(id);
-      await sendEmail(user.email, messages.emailRequestProcessedSent, messages.emailRejectRequestProcessedSent(rejectionReason));
+      await sendEmail(
+        user.email,
+        messages.emailRequestProcessedSent,
+        messages.emailRejectRequestProcessedSent(rejectionReason)
+      );
       await sendSms(user.phone, messages.smsRequestProcessedSent);
 
       res.status(200).json({ status: true });
       return;
-    } catch (err) {
+    } catch (err: any) {
+      console.error("refuseEmployeeForm error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }

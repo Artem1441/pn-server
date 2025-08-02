@@ -15,7 +15,7 @@ import settingsRouter from "./routes/settings.route.js";
 import docxRouter from "./routes/docx.route.js";
 import specialityRouter from "./routes/speciality.route.js";
 import sequelize from "./db/index.js";
-import { initUserModel } from "./models/User.model.js";
+import { initUserModel, User } from "./models/User.model.js";
 import { initVerificationCodeModel } from "./models/VerificationCode.model.js";
 import { initInformationModel } from "./models/Information.model.js";
 import { initInformationChangeModel } from "./models/InformationChange.model.js";
@@ -30,6 +30,7 @@ import {
   TerminationReason,
 } from "./models/TerminationReason.model.js";
 import { initDocxModel } from "./models/Docx.model.js";
+import { initUserStudioModel, UserStudio } from "./models/UserStudio.model.js";
 dotenv.config();
 
 const app = express();
@@ -78,6 +79,18 @@ app.use("/api", swaggerRoute);
   initPeriodicityModel(sequelize);
   initTerminationReasonModel(sequelize);
   initDocxModel(sequelize);
+  initUserStudioModel(sequelize);
+
+  // Users
+  User.belongsTo(Speciality, {
+    foreignKey: "speciality_id",
+    as: "speciality",
+  });
+
+  Speciality.hasMany(User, {
+    foreignKey: "speciality_id",
+    as: "users",
+  });
 
   // Studio
   Studio.belongsTo(City, {
@@ -110,6 +123,21 @@ app.use("/api", swaggerRoute);
   Speciality.hasMany(TerminationReason, {
     foreignKey: "speciality_id",
     as: "termination_reasons",
+  });
+
+  // UserStudio
+  User.belongsToMany(Studio, {
+    through: UserStudio,
+    foreignKey: "user_id",
+    otherKey: "studio_id",
+    as: "studios",
+  });
+
+  Studio.belongsToMany(User, {
+    through: UserStudio,
+    foreignKey: "studio_id",
+    otherKey: "user_id",
+    as: "users",
   });
 
   app.listen(PORT, () => console.log(`http://localhost:${PORT}`));

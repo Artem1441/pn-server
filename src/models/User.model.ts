@@ -5,6 +5,7 @@ interface UserCreationAttributes
   extends Optional<
     IUser,
     | "id"
+    | "speciality_id"
     | "role"
     | "time_zone"
     | "locale"
@@ -20,8 +21,6 @@ interface UserCreationAttributes
     | "equipments"
     | "ycl_staff_id"
     | "agent_percent"
-    | "speciality_id"
-    | "studio_id"
     | "passport_main"
     | "passport_registration"
     | "photo_front"
@@ -35,6 +34,7 @@ export class User
   implements IUser
 {
   public id!: number;
+  public speciality_id?: number;
   public role!: IUser["role"];
   public login!: string;
   public password!: string;
@@ -57,8 +57,6 @@ export class User
   public equipments?: any; // JSONB
   public ycl_staff_id?: number;
   public agent_percent?: number;
-  public speciality_id?: number;
-  public studio_id?: number;
   public passport_main?: string;
   public passport_registration?: string;
   public photo_front?: string;
@@ -74,6 +72,11 @@ export const initUserModel = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true,
+      },
+      speciality_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: { model: "specialities", key: "id" },
       },
       role: {
         type: DataTypes.ENUM("admin", "specialist", "accountant"),
@@ -196,14 +199,6 @@ export const initUserModel = (sequelize: Sequelize) => {
           max: 100,
         },
       },
-      speciality_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
-      studio_id: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-      },
       passport_main: {
         type: DataTypes.STRING(255),
         allowNull: true,
@@ -239,8 +234,8 @@ export const initUserModel = (sequelize: Sequelize) => {
     {
       sequelize,
       tableName: "users",
-      timestamps: true, 
-      createdAt: "created_at", 
+      timestamps: true,
+      createdAt: "created_at",
       updatedAt: "updated_at",
     }
   );

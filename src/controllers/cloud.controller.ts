@@ -16,7 +16,8 @@ class CloudController {
 
       res.header("Content-Type", "image/jpeg");
       fileStream.pipe(res);
-    } catch (err) {
+    } catch (err: any) {
+      console.error("getImage error: ", err);
       res.status(500).send({
         status: false,
         error: "Не удалось прочитать файл",
@@ -41,7 +42,8 @@ class CloudController {
       // res.header("Content-Disposition", `attachment; filename="${fileKey}.${type}"`);
 
       fileStream.pipe(res);
-    } catch (err) {
+    } catch (err: any) {
+      console.error("getFile error: ", err);
       res.status(500).send({
         status: false,
         error: "Не удалось прочитать файл",
@@ -55,6 +57,7 @@ class CloudController {
   ): Promise<void> => {
     const { file } = req;
 
+    try {
     if (!file) {
       res.status(400).send({
         status: false,
@@ -67,6 +70,13 @@ class CloudController {
     await S3Upload(fileKey, file.buffer, file.mimetype);
 
     res.status(200).json({ status: true, data: fileKey });
+  } catch (err: any) {
+    console.error("uploadFile error: ", err);
+    res.status(500).send({
+      status: false,
+      error: "Ошибка при загрузке файла",
+    });
+  }
   };
 }
 

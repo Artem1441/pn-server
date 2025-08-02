@@ -183,7 +183,7 @@ export const updateUserFieldById = async ({
   value,
 }: {
   id: number;
-  field: string;
+  field: keyof IUser;
   value: any;
 }) => {
   const user = await User.findByPk(id);

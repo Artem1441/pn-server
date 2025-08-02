@@ -318,8 +318,8 @@ class DocxController {
       );
       res.status(200).json({ status: true, data: docxs_obj });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("getDocxs error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -353,8 +353,8 @@ class DocxController {
         status: true,
       });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("saveDocx error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -427,8 +427,8 @@ class DocxController {
 
       res.status(200).json({ status: true, data: fileKey });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("testDocx error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     } finally {
@@ -448,7 +448,7 @@ class DocxController {
       });
       return;
     } catch (err: any) {
-      console.error(err.message);
+      console.error("deleteDocx error: ", err);
       res
         .status(500)
         .json({ status: false, error: err.message || errors.serverError });

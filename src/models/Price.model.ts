@@ -1,10 +1,13 @@
 import { Model, DataTypes, Sequelize } from "sequelize";
 import { Optional } from "sequelize";
-import IPrice, { IPriceClientsDataItem, IPriceSelfEmployedDataItem } from "../types/IPrice.interface";
+import IPrice, {
+  IPriceClientsDataItem,
+  IPriceSelfEmployedDataItem,
+} from "../types/IPrice.interface";
 
 interface PriceCreationAttributes
   extends Optional<
-  IPrice,
+    IPrice,
     | "id"
     | "city_id"
     | "self_employed_data"
@@ -21,7 +24,10 @@ interface PriceCreationAttributes
     | "updated_at"
   > {}
 
-export class Price extends Model<IPrice, PriceCreationAttributes> implements IPrice {
+export class Price
+  extends Model<IPrice, PriceCreationAttributes>
+  implements IPrice
+{
   public id!: number;
   public city_id!: number;
   public self_employed_data!: IPriceSelfEmployedDataItem[];
@@ -39,78 +45,75 @@ export class Price extends Model<IPrice, PriceCreationAttributes> implements IPr
 }
 
 export const initPriceModel = (sequelize: Sequelize) => {
-    Price.init(
-      {
-        id: {
-          type: DataTypes.INTEGER,
-          autoIncrement: true,
-          primaryKey: true,
-        },
-        city_id: {
-          type: DataTypes.INTEGER,
-          allowNull: true,
-          references: {
-            model: 'cities',
-            key: 'id'
-          }
-        },
-        self_employed_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        clients_mani_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        clients_pedi_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        clients_mani_pedi_four_hands_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        clients_design_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        clients_additional_nail_services_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        clients_brow_arch_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        clients_promo_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        clients_model_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        clients_goods_data: {
-          type: DataTypes.JSON,
-          allowNull: true,
-        },
-        created_at: {
-          type: DataTypes.DATE,
-          allowNull: false,
-          defaultValue: DataTypes.NOW,
-        },
-        updated_at: {
-          type: DataTypes.DATE,
-          allowNull: false,
-          defaultValue: DataTypes.NOW,
-        },
+  Price.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
       },
-      {
-        sequelize,
-        tableName: "prices",
-        timestamps: true,
-        createdAt: "created_at",
-        updatedAt: "updated_at",
-      }
-    );
-  };
+      city_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: { model: "cities", key: "id" },
+      },
+      self_employed_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      clients_mani_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      clients_pedi_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      clients_mani_pedi_four_hands_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      clients_design_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      clients_additional_nail_services_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      clients_brow_arch_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      clients_promo_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      clients_model_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      clients_goods_data: {
+        type: DataTypes.JSON,
+        allowNull: true,
+      },
+      created_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updated_at: {
+        type: DataTypes.DATE,
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+    },
+    {
+      sequelize,
+      tableName: "prices",
+      timestamps: true,
+      createdAt: "created_at",
+      updatedAt: "updated_at",
+    }
+  );
+};

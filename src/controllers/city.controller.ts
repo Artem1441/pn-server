@@ -16,8 +16,8 @@ class CityController {
         data: cities,
       });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("getCities error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -38,8 +38,8 @@ class CityController {
         status: true,
       });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("createCity error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -59,8 +59,8 @@ class CityController {
         status: true,
       });
       return;
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error("updateCity error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
@@ -78,7 +78,7 @@ class CityController {
       });
       return;
     } catch (err: any) {
-      console.error(err.message);
+      console.error("deleteCity error: ", err);
       res.status(500).json({ status: false, error: err.message || errors.serverError });
       return;
     }

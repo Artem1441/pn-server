@@ -1,7 +1,21 @@
 -- CREATE DATABASE nails;
+-- specialities
+CREATE TABLE public.specialities (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+CREATE OR REPLACE FUNCTION update_specialities_updated_at() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = CURRENT_TIMESTAMP;
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER trigger_update_specialities_updated_at BEFORE
+UPDATE ON public.specialities FOR EACH ROW EXECUTE FUNCTION update_specialities_updated_at();
 -- users
 CREATE TABLE public.users (
     id SERIAL PRIMARY KEY,
+    speciality_id INTEGER,
     role VARCHAR(20) NOT NULL CHECK (role IN ('admin', 'specialist', 'accountant')) DEFAULT 'specialist',
     login VARCHAR(100) UNIQUE,
     password TEXT,
@@ -41,8 +55,6 @@ CREATE TABLE public.users (
         agent_percent >= 0
         AND agent_percent <= 100
     ),
-    speciality_id INTEGER,
-    studio_id INTEGER,
     passport_main VARCHAR(255),
     passport_registration VARCHAR(255),
     photo_front VARCHAR(255),
@@ -54,7 +66,8 @@ CREATE TABLE public.users (
         )
     ) DEFAULT 'in the process of filling',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_termination_reason_speciality_id FOREIGN KEY (speciality_id) REFERENCES public.specialities(id) ON DELETE RESTRICT
 );
 CREATE OR REPLACE FUNCTION update_users_updated_at() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = CURRENT_TIMESTAMP;
 RETURN NEW;
@@ -288,19 +301,6 @@ END;
 $$ LANGUAGE plpgsql;
 CREATE TRIGGER trigger_update_motivation_updated_at BEFORE
 UPDATE ON public.motivation FOR EACH ROW EXECUTE FUNCTION update_motivation_updated_at();
--- specialities
-CREATE TABLE public.specialities (
-    id SERIAL PRIMARY KEY,
-    name TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-CREATE OR REPLACE FUNCTION update_specialities_updated_at() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = CURRENT_TIMESTAMP;
-RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-CREATE TRIGGER trigger_update_specialities_updated_at BEFORE
-UPDATE ON public.specialities FOR EACH ROW EXECUTE FUNCTION update_specialities_updated_at();
 -- periodicity
 CREATE TABLE public.periodicity (
     id SERIAL PRIMARY KEY,
@@ -393,8 +393,59 @@ END;
 $$ LANGUAGE plpgsql;
 CREATE TRIGGER trigger_update_docxs_updated_at BEFORE
 UPDATE ON public.docxs FOR EACH ROW EXECUTE FUNCTION update_docxs_updated_at();
+-- ADDITIONAL__TABLES
+CREATE TABLE user_studios (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    studio_id INTEGER NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    -- Внешние ключи
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_studio FOREIGN KEY (studio_id) REFERENCES studios(id) ON DELETE CASCADE
+);
 -- __ADD__DATA__ (no tables)
+-- cities
+INSERT INTO public.cities (name)
+VALUES ('Тюмень');
+-- studios
+INSERT INTO public.studios (
+        city_id,
+        name,
+        general_full_address,
+        general_area,
+        general_cadastral_number,
+        general_contract_number,
+        general_contract_date,
+        general_registration,
+        general_rent_price_per_sqm,
+        general_owner_last_name,
+        general_owner_first_name,
+        general_owner_middle_name,
+        general_owner_phone,
+        general_owner_email
+    )
+VALUES (
+        1,
+        'Тюмень Щербины 20/2',
+        'г. Тюмень, бульвар Бориса Щербины, д.20/2',
+        '50 м2',
+        '72:23:0000000:9418',
+        '№ 002',
+        '2022-10-09',
+        '72:23:0000000:9418-72/047/2021-7 от 06.09.2021 г. и 72:23:0000000:9418-72/047/2021-6 от 06.09.2021 г.',
+        '50000',
+        'Иванов',
+        'Иван',
+        'Иванович',
+        '+79999999999',
+        'example@gmail.com'
+    );
+-- specialities
+INSERT INTO public.specialities (name)
+VALUES ('мастер ногтевого сервиса');
+-- users
 INSERT INTO public.users (
+        speciality_id,
         role,
         login,
         password,
@@ -414,14 +465,13 @@ INSERT INTO public.users (
         equipments,
         ycl_staff_id,
         agent_percent,
-        speciality_id,
-        studio_id,
         passport_main,
         passport_registration,
         photo_front,
         registration_status
     )
 VALUES (
+        1,
         'admin',
         'admin_login',
         'hashed_password_here',
@@ -441,8 +491,6 @@ VALUES (
         '[{"id": 1, "name": "Canon EOS 5D Mark IV"}]'::JSONB,
         123456,
         10.50,
-        1,
-        1,
         'https://example.com/passport_main.jpg',
         'https://example.com/passport_registration.jpg',
         'https://example.com/photo_front.jpg',

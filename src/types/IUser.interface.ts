@@ -45,7 +45,6 @@ export default interface IUser {
   ycl_staff_id?: number;
   agent_percent?: number;
   speciality_id?: number;
-  studio_id?: number;
   passport_main?: string;
   passport_registration?: string;
   photo_front?: string;

@@ -28,12 +28,9 @@ export const initVerificationCodeModel = (sequelize: Sequelize) => {
       },
       user_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-          model: "users", // Ссылка на таблицу users
-          key: "id",
-        },
-        onDelete: "CASCADE", // Каскадное удаление
+        allowNull: true,
+        references: { model: "users", key: "id" },
+        onDelete: "CASCADE",
       },
       type: {
         type: DataTypes.ENUM("phone", "email"),
@@ -70,4 +67,4 @@ export const initVerificationCodeModel = (sequelize: Sequelize) => {
       updatedAt: false, // Отключаем updatedAt, так как его нет в таблице
     }
   );
-}
+};

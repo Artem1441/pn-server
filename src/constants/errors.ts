@@ -24,7 +24,8 @@ const errors = {
   cityNotFound: "Город не найден",
   priceNotFound: "Цена не найдена",
   specialityNotFound: "Специальность не найдена",
-  settingsTerminationReasonNotFound: "Причина для увольнения из настроек не найдена",
+  settingsTerminationReasonNotFound:
+    "Причина для увольнения из настроек не найдена",
   docxNotFound: "Word-документ не найден",
 
   userNotAdmin: "Пользователь не админ",
@@ -80,7 +81,11 @@ const errors = {
 
   terminationReasonsFieldsRequired: "Все поля должны быть заполнены",
 
-  cannotDeleteEntityBecauseItIsUsed: "Невозможно удалить запись: она используется в другой таблице"
+  cannotDeleteEntityBecauseItIsUsed:
+    "Невозможно удалить запись: она используется в другой таблице",
+
+  specialityIdRequired: "Выберите специальность",
+  studioIdsRequired: "Выберите студии",
 };
 
 export default errors;

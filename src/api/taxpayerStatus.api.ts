@@ -27,7 +27,8 @@ const taxpayerStatusApi = async ({
           error: errors.notRegisteredAsSelfEmployed,
       };
     }
-  } catch (err) {
+  } catch (err: any) {
+    console.error("taxpayerStatusApi error: ", err)
     if (axios.isAxiosError(err)) {
       const error = err as AxiosError;
   

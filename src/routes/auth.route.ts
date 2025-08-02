@@ -5,6 +5,7 @@ import checkIsAdminMiddleware from "../middlewares/checkIsAdmin.middleware.js";
 import checkResetPasswordMiddleware from "../middlewares/checkResetPassword.middleware.js";
 import checkResetPasswordTokenMiddleware from "../middlewares/checkResetPasswordToken.middleware.js";
 import checkSignUpTokenMiddleware from "../middlewares/checkSignUpToken.middleware.js";
+import checkValidateConfirmEmployeeFormMiddleware from "../middlewares/checkValidateConfirmEmployeeForm.middleware.js";
 import checkValidateIdentificationDataMiddleware from "../middlewares/checkValidateIdentificationData.middleware.js";
 import checkValidatePersonalDataMiddleware from "../middlewares/checkValidatePersonalData.middleware.js";
 import signUpStageMiddleware from "../middlewares/signUpStage.middleware.js";
@@ -162,10 +163,16 @@ router.post(
   AuthController.resetPassword
 );
 
+router.get("/auth/getSpecialitiesAndStudios",   authenticateTokenMiddleware,
+checkIsAdminMiddleware,
+AuthController.getSpecialitiesAndStudios
+);
+
 router.post(
   "/auth/confirmEmployeeForm",
   authenticateTokenMiddleware,
   checkIsAdminMiddleware,
+  checkValidateConfirmEmployeeFormMiddleware,
   AuthController.confirmEmployeeForm
 );
 

@@ -47,7 +47,10 @@ interface StudioCreationAttributes
     | "city_id"
   > {}
 
-export class Studio extends Model<IStudio, StudioCreationAttributes> implements IStudio {
+export class Studio
+  extends Model<IStudio, StudioCreationAttributes>
+  implements IStudio
+{
   public id!: number;
   public city_id!: number;
   public name!: string;
@@ -108,11 +111,8 @@ export const initStudioModel = (sequelize: Sequelize) => {
       },
       city_id: {
         type: DataTypes.INTEGER,
-        allowNull: true, // или false, если будешь заполнять все записи
-        references: {
-          model: 'cities', // имя таблицы
-          key: 'id'        // колонка в cities
-        }
+        allowNull: true,
+        references: { model: "cities", key: "id" },
       },
       name: {
         type: DataTypes.STRING(255),
@@ -146,7 +146,6 @@ export const initStudioModel = (sequelize: Sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
-
       general_owner_last_name: {
         type: DataTypes.STRING(255),
         allowNull: true,

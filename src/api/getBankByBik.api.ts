@@ -20,7 +20,8 @@ const getBankByBikApi = async (
         error: errors.bikNotFound,
       };
     }
-  } catch (err) {
+  } catch (err: any) {
+    console.error("getBankByBikApi error: ", err)
     if (axios.isAxiosError(err)) return { status: false, error: errors.serverError };
     else return { status: false, error: errors.unexpectedError };
   }

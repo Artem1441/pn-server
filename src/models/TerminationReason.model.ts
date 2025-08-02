@@ -13,7 +13,10 @@ interface TerminationReasonCreationAttributes
     | "updated_at"
   > {}
 
-export class TerminationReason extends Model<ITerminationReason, TerminationReasonCreationAttributes> implements ITerminationReason {
+export class TerminationReason
+  extends Model<ITerminationReason, TerminationReasonCreationAttributes>
+  implements ITerminationReason
+{
   public id!: number;
   public speciality_id!: number;
   public reason!: string;
@@ -24,7 +27,7 @@ export class TerminationReason extends Model<ITerminationReason, TerminationReas
 }
 
 export const initTerminationReasonModel = (sequelize: Sequelize) => {
-    TerminationReason.init(
+  TerminationReason.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -34,10 +37,7 @@ export const initTerminationReasonModel = (sequelize: Sequelize) => {
       speciality_id: {
         type: DataTypes.INTEGER,
         allowNull: true,
-        references: {
-          model: 'specialities', 
-          key: 'id'        
-        }
+        references: { model: "specialities", key: "id" },
       },
       reason: {
         type: DataTypes.STRING(255),
