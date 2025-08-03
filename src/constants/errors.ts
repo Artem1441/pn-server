@@ -21,6 +21,7 @@ const errors = {
 
   userNotFound: "Пользователь не найден",
   studioNotFound: "Студия не найдена",
+  studiosNotFound: "Студии не найдены",
   cityNotFound: "Город не найден",
   priceNotFound: "Цена не найдена",
   specialityNotFound: "Специальность не найдена",
@@ -29,6 +30,7 @@ const errors = {
   docxNotFound: "Word-документ не найден",
 
   userNotAdmin: "Пользователь не админ",
+  userNotSpecialist: "Пользователь не мастер",
 
   serverError: "Ошибка сервера",
 

@@ -166,7 +166,6 @@ export const initStudioModel = (sequelize: Sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
-
       general_coowner_available: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
@@ -192,7 +191,6 @@ export const initStudioModel = (sequelize: Sequelize) => {
         type: DataTypes.STRING(255),
         allowNull: true,
       },
-
       general_work_schedule: {
         type: DataTypes.STRING(255),
         allowNull: true,

@@ -3,7 +3,7 @@ import errors from "../constants/errors";
 import { getUserById } from "../db/personal.db";
 import IResp from "../types/IResp.interface";
 
-const checkIsAdminMiddleware = async (
+const checkIsSpecialistMiddleware = async (
   req: Request,
   res: Response<IResp<null>>,
   next: NextFunction
@@ -23,10 +23,10 @@ const checkIsAdminMiddleware = async (
     if (!user) throw new Error(errors.userNotFound)
     const { role } = user;
 
-    if (role !== "admin") {
+    if (role !== "specialist") {
       res.status(401).json({
         status: false,
-        error: errors.userNotAdmin,
+        error: errors.userNotSpecialist,
       });
       return;
     }
@@ -38,4 +38,4 @@ const checkIsAdminMiddleware = async (
   }
 };
 
-export default checkIsAdminMiddleware;
+export default checkIsSpecialistMiddleware;

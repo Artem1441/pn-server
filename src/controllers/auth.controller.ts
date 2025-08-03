@@ -8,7 +8,7 @@ import {
   getUserById,
   updatePersonalDataToUser,
   updateUserFieldById,
-} from "../db/auth.db.js";
+} from "../db/personal.db.js";
 import { verifyCode } from "../helpers/verification.helper.js";
 import IResp from "../types/IResp.interface.js";
 import errors from "../constants/errors.js";
@@ -123,9 +123,9 @@ class AuthController {
     const { name, surname, patronymic, phone, email, inn } = req.body;
     let id;
     try {
-      const userByPhone: IUser | null = await getUserByField("phone", phone);
-      const userByEmail: IUser | null = await getUserByField("email", email);
-      const userByInn: IUser | null = await getUserByField("inn", inn);
+      const userByPhone = await getUserByField("phone", phone, ["id"]);
+      const userByEmail = await getUserByField("email", email, ["id"]);
+      const userByInn = await getUserByField("inn", inn, ["id"]);
 
       if (
         userByPhone &&
@@ -298,7 +298,12 @@ class AuthController {
   ): Promise<void> => {
     const { login, password } = req.body;
     try {
-      const user: IUser | null = await getUserByField("login", login);
+      const user = await getUserByField("login", login, [
+        "id",
+        "password",
+        "registration_status",
+        "is_banned",
+      ]);
 
       if (!user) {
         res.status(401).json({
@@ -359,14 +364,14 @@ class AuthController {
   ): Promise<void> => {
     const { emailOrLogin } = req.body;
     try {
-      const userByLogin: IUser | null = await getUserByField(
-        "login",
-        emailOrLogin
-      );
-      const userByEmail: IUser | null = await getUserByField(
+      const userByLogin = await getUserByField("login", emailOrLogin, [
+        "id",
         "email",
-        emailOrLogin
-      );
+      ]);
+      const userByEmail = await getUserByField("email", emailOrLogin, [
+        "id",
+        "email",
+      ]);
       const user = userByLogin ? userByLogin : userByEmail;
 
       if (!user) {
@@ -448,7 +453,8 @@ class AuthController {
       studio_ids: IStudio["id"][];
     } = req.body;
     try {
-      const user = await getUserById(id);
+      const user = await getUserById(id, ["email", "login", "phone"]);
+      if (!user) throw new Error(errors.userNotFound);
       await updateUserFieldById({
         id,
         field: "registration_status",
@@ -475,14 +481,14 @@ class AuthController {
         field: "password",
         value: hashedPassword,
       });
-      const login = user.login;
+      const { login, email, phone } = user;
 
       await sendEmail(
-        user.email,
+        email,
         messages.emailRequestProcessedSent,
         messages.emailAcceptRequestProcessedSent(login, password)
       );
-      await sendSms(user.phone, messages.smsRequestProcessedSent);
+      await sendSms(phone, messages.smsRequestProcessedSent);
 
       res.status(200).json({ status: true });
       return;
@@ -499,15 +505,17 @@ class AuthController {
   ) => {
     const { id, rejectionReason } = req.body;
     try {
-      const user = await getUserById(id);
+      const user = await getUserById(id, ["email", "phone"]);
+      if (!user) throw new Error(errors.userNotFound);
+      const { email, phone } = user;
 
       await deleteUserById(id);
       await sendEmail(
-        user.email,
+        email,
         messages.emailRequestProcessedSent,
         messages.emailRejectRequestProcessedSent(rejectionReason)
       );
-      await sendSms(user.phone, messages.smsRequestProcessedSent);
+      await sendSms(phone, messages.smsRequestProcessedSent);
 
       res.status(200).json({ status: true });
       return;

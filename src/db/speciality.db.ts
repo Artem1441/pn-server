@@ -56,6 +56,19 @@ export const deleteSpeciality = async (id: ISpeciality["id"]): Promise<void> => 
   }
 };
 
+export const getSpecialityById = async <T extends (keyof ISpeciality)[]>(
+  id: ISpeciality["id"],
+  fields: T = [] as unknown as T
+): Promise<(T extends [] ? ISpeciality : Pick<ISpeciality, T[number]>) | null> => {
+  const user = await Speciality.findByPk(id, {
+    attributes: fields.length > 0 ? fields : undefined,
+  });
+
+  if (!user) return null
+
+  return user.toJSON() as T extends [] ? ISpeciality : Pick<ISpeciality, T[number]>;
+};
+
 export const getSpecialities = async (): Promise<ISpeciality[]> => {
   try {
     const specialities = await Speciality.findAll();

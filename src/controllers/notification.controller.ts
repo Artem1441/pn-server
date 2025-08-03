@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import errors from "../constants/errors";
-import { getUserByField, getUsersByField } from "../db/auth.db";
+import { getUsersByField } from "../db/personal.db";
 import IResp from "../types/IResp.interface";
 import IUser from "../types/IUser.interface";
 
 class NotificationController {
   private getUsersInWaitingRoom = async (): Promise<IUser[]> => {
-    const usersInWaitingRoom: IUser[] | null = await getUsersByField(
+    const usersInWaitingRoom = await getUsersByField(
       "registration_status",
       "under review"
     );

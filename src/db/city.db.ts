@@ -10,8 +10,8 @@ export const createCity = async ({
   try {
     const city = await City.create({ name });
     return city.id;
-  } catch (error) {
-    console.error("Ошибка при создании города:", error);
+  } catch (err: any) {
+    console.error("Ошибка при создании города:", err);
     return -1;
   }
 };
@@ -61,8 +61,8 @@ export const getCities = async (): Promise<ICity[]> => {
     const cities = await City.findAll();
     if (!cities) throw null;
     return cities;
-  } catch (error) {
-    console.error("Ошибка при получении городов:", error);
+  } catch (err: any) {
+    console.error("Ошибка при получении городов (getCities):", err);
     throw null;
   }
 };

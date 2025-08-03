@@ -14,6 +14,7 @@ import swaggerRoute from "./routes/swagger.route.js";
 import settingsRouter from "./routes/settings.route.js";
 import docxRouter from "./routes/docx.route.js";
 import specialityRouter from "./routes/speciality.route.js";
+import personalRouter from "./routes/personal.route.js";
 import sequelize from "./db/index.js";
 import { initUserModel, User } from "./models/User.model.js";
 import { initVerificationCodeModel } from "./models/VerificationCode.model.js";
@@ -63,6 +64,7 @@ app.use("/api", motivationRouter);
 app.use("/api", settingsRouter);
 app.use("/api", specialityRouter);
 app.use("/api", docxRouter);
+app.use("/api", personalRouter);
 app.use("/api", swaggerRoute);
 
 (async () => {
@@ -126,19 +128,7 @@ app.use("/api", swaggerRoute);
   });
 
   // UserStudio
-  User.belongsToMany(Studio, {
-    through: UserStudio,
-    foreignKey: "user_id",
-    otherKey: "studio_id",
-    as: "studios",
-  });
-
-  Studio.belongsToMany(User, {
-    through: UserStudio,
-    foreignKey: "studio_id",
-    otherKey: "user_id",
-    as: "users",
-  });
+  UserStudio.associate({ Studio });
 
   app.listen(PORT, () => console.log(`http://localhost:${PORT}`));
 })();

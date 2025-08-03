@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import errors from "../constants/errors";
 import registrationStages from "../constants/registrationStages";
 import tokens from "../constants/tokens";
-import { getUserById } from "../db/auth.db";
+import { getUserById } from "../db/personal.db";
 import { jwtSign, jwtVerify } from "../helpers/jwt.helper";
 import IResp from "../types/IResp.interface";
 import StageType from "../types/StageType.type";
@@ -25,27 +25,31 @@ const signUpStageMiddleware = async (
     const decoded = jwtVerify(token);
     const userId = decoded.id;
 
-    const user = await getUserById(userId);
-
-    const {registration_status} = user
-
+    const user = await getUserById(userId, [
+      "registration_status",
+      "is_confirmed_phone",
+      "is_confirmed_email",
+    ]);
+    if (!user) throw new Error(errors.userNotFound)
+    const { registration_status } = user;
 
     if (registration_status === "under review") {
       res.status(200).json({
         status: true,
-        data:registrationStages.waitingRoom,
+        data: registrationStages.waitingRoom,
       });
       return;
     }
 
     if (registration_status === "confirmed") {
       res
-      .cookie("token", jwtSign({ id: userId }, "7d"), tokens.token)
-      .clearCookie("signUpToken", tokens.clearToken)
-      .status(200).json({
-        status: true,
-        data:registrationStages.homePage,
-      });
+        .cookie("token", jwtSign({ id: userId }, "7d"), tokens.token)
+        .clearCookie("signUpToken", tokens.clearToken)
+        .status(200)
+        .json({
+          status: true,
+          data: registrationStages.homePage,
+        });
       return;
     }
 
@@ -54,7 +58,7 @@ const signUpStageMiddleware = async (
     if (!is_confirmed_phone || !is_confirmed_email) {
       res.status(200).json({
         status: true,
-        data:registrationStages.identificationData,
+        data: registrationStages.identificationData,
       });
       return;
     }
@@ -65,8 +69,8 @@ const signUpStageMiddleware = async (
     });
     next();
     return;
-  } catch (error) {
-    console.log(error);
+  } catch (err: any) {
+    console.error(err);
     res.status(401).json({
       status: false,
       error: errors.serverError,

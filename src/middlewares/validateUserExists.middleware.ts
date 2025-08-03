@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import errors from "../constants/errors";
-import { getUserById } from "../db/auth.db";
+import { getUserById } from "../db/personal.db";
 
 const validateUserExistsMiddleware = async (
   req: Request,
@@ -16,6 +16,7 @@ const validateUserExistsMiddleware = async (
 
   try {
     const user = await getUserById(userId);
+    if (!user) throw new Error(errors.userNotFound);
 
     if (!user) {
       res.status(401).json({ error: errors.userNotFound });

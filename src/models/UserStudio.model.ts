@@ -1,6 +1,7 @@
 import { Model, DataTypes, Sequelize } from "sequelize";
 import { Optional } from "sequelize";
 import IUserStudio from "../types/IUserStudio.interface";
+import { Studio } from "./Studio.model";
 
 interface UserStudioCreationAttributes
   extends Optional<IUserStudio, "id" | "created_at"> {}
@@ -10,10 +11,17 @@ export class UserStudio
   implements IUserStudio
 {
   public id!: number;
+  public readonly studio?: Studio;
   public user_id!: number;
   public studio_id!: number;
   public created_at!: Date;
   public updated_at!: Date;
+  public static associate(models: { Studio: typeof Studio }): void {
+    UserStudio.belongsTo(models.Studio, {
+      foreignKey: "studio_id",
+      as: "studio",
+    });
+  }
 }
 
 export const initUserStudioModel = (sequelize: Sequelize) => {
@@ -38,7 +46,6 @@ export const initUserStudioModel = (sequelize: Sequelize) => {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: DataTypes.NOW,
-        field: "created_at",
       },
     },
     {
