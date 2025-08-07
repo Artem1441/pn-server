@@ -1,10 +1,7 @@
-import { Op, ValidationError } from "sequelize";
+import { Op } from "sequelize";
 import errors from "../constants/errors.js";
-import { hashPassword } from "../helpers/bcrypt.helper.js";
-import { generateLogin } from "../helpers/generate.helper.js";
 import { User } from "../models/User.model.js";
 import { VerificationCode } from "../models/VerificationCode.model.js";
-import IUser from "../types/IUser.interface.js";
 import IVerificationCode from "../types/IVerificationCode.interface.js";
 
 export const getActiveVerificationCode = async (

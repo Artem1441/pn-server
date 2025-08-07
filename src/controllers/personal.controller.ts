@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import errors from "../constants/errors";
-import { getUserById } from "../db/personal.db";
+import { getUserById, updateUserFieldById } from "../db/personal.db";
 import { getSpecialityById } from "../db/speciality.db";
 import { getUserStudiosByUserId } from "../db/userStudios.db";
+import { bcryptCompare, hashPassword } from "../helpers/bcrypt.helper";
 import IResp from "../types/IResp.interface";
 import ISpeciality from "../types/ISpeciality.interface";
 import IStudio from "../types/IStudio.interface";
@@ -92,6 +93,52 @@ class PersonalController {
       return;
     } catch (err: any) {
       console.error("getPersonalData error: ", err);
+      res.status(500).json({ status: false, error: errors.serverError });
+      return;
+    }
+  };
+
+  public changePassword = async (
+    req: Request,
+    res: Response<IResp<null>>
+  ): Promise<void> => {
+    const {
+      user: { id },
+      currentPassword,
+      newPassword,
+    }: {
+      user: {
+        id: IUser["id"];
+      };
+      currentPassword: IUser["password"];
+      newPassword: IUser["password"];
+    } = req.body;
+
+    try {
+      const user = await getUserById(id, ["password"]);
+      if (!user) throw new Error(errors.userNotFound);
+
+      const isPassword = await bcryptCompare(currentPassword, user.password);
+
+      if (!isPassword) {
+        res.status(401).json({
+          status: false,
+          error: errors.incorrectPassword,
+        });
+        return;
+      }
+
+      const hashedPassword = await hashPassword(newPassword);
+
+      await updateUserFieldById({
+        id,
+        field: "password",
+        value: hashedPassword,
+      });
+
+      res.status(200).json({ status: true });
+    } catch (err: any) {
+      console.error("changePassword error: ", err);
       res.status(500).json({ status: false, error: errors.serverError });
       return;
     }
