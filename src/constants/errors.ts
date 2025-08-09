@@ -78,7 +78,8 @@ const errors = {
   studioShortNameRequired: "Название студии не должно быть пустым",
   studioDateInvalid: "Дата указана некорректно",
 
-  cityShortNameRequired: "Название города не должно быть пустым",
+  cityNameRequired: "Название города не должно быть пустым",
+  cityCodeRequired: "Код города не должен быть пустым",
   specialityShortNameRequired: "Название специальности не должно быть пустым",
 
   terminationReasonsFieldsRequired: "Все поля должны быть заполнены",

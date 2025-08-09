@@ -155,6 +155,7 @@ CREATE TABLE public.information_changes (
 CREATE TABLE public.cities (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
+    city_code: VARCHAR(255),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -405,8 +406,8 @@ CREATE TABLE user_studios (
 );
 -- __ADD__DATA__ (no tables)
 -- cities
-INSERT INTO public.cities (name)
-VALUES ('Тюмень');
+INSERT INTO public.cities (name, city_code)
+VALUES ('Тюмень', "TJM");
 -- studios
 INSERT INTO public.studios (
         city_id,

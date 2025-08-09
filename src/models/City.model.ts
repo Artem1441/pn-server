@@ -1,21 +1,22 @@
-import { Model, DataTypes, Sequelize } from "sequelize";
-import { Optional } from "sequelize";
-import ICity from "../types/ICity.interface";
+import { Model, DataTypes, Sequelize } from "sequelize"
+import { Optional } from "sequelize"
+import ICity from "../types/ICity.interface"
 
 interface CityCreationAttributes
   extends Optional<
     ICity,
-    | "id"
-    | "name"
-    | "created_at"
-    | "updated_at"
+    "id" | "name" | "city_code" | "created_at" | "updated_at"
   > {}
 
-export class City extends Model<ICity, CityCreationAttributes> implements ICity {
-  public id!: number;
-  public name!: string;
-  public created_at!: Date;
-  public updated_at!: Date;
+export class City
+  extends Model<ICity, CityCreationAttributes>
+  implements ICity
+{
+  public id!: number
+  public name!: string
+  public city_code!: string
+  public created_at!: Date
+  public updated_at!: Date
 }
 
 export const initCityModel = (sequelize: Sequelize) => {
@@ -27,6 +28,10 @@ export const initCityModel = (sequelize: Sequelize) => {
         primaryKey: true,
       },
       name: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+      },
+      city_code: {
         type: DataTypes.STRING(255),
         allowNull: false,
       },
@@ -48,5 +53,5 @@ export const initCityModel = (sequelize: Sequelize) => {
       createdAt: "created_at",
       updatedAt: "updated_at",
     }
-  );
-};
+  )
+}
